@@ -242,7 +242,7 @@ public final class NBTEditorNew {
 
     @NotNull
     public static NBTEditorNew.NBTCompound of(@NotNull final ItemStack itemStack) {
-        return new NBTEditorNew.NBTCompound(itemStack);
+        return null;
     }
 
     @NotNull
@@ -359,9 +359,6 @@ public final class NBTEditorNew {
 
     @RequiredArgsConstructor
     public static final class NBTCompound {
-
-        @NotNull
-        private final Object object;
 
     }
 
