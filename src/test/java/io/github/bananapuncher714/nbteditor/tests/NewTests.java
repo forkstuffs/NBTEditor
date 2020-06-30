@@ -10,7 +10,7 @@ public class NewTests {
 
     public void test() {
         final ItemStack itemStack = new ItemStack(Material.DIAMOND);
-        final NBTEditorNew.ItemStackCompound compound = NBTEditorNew.of(itemStack);
+        final NBTEditorNew.ItemStackCompound compound = NBTEditorNew.from(itemStack);
 
     }
 
