@@ -1,5 +1,6 @@
 package io.github.bananapuncher714.nbteditor;
 
+import io.github.bananapuncher714.nbteditor.tests.NewTests;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,6 +20,7 @@ public final class NBTEditorTestPlugin extends JavaPlugin {
 				ItemTests::ensureItemCustomIntSetAndGet,
 				ItemTests::ensureItemCustomDoubleSetAndGet,
 				ItemTests::ensureItemCustomBooleanSetAndGet,
+				NewTests::test
 		};
 		
 		final List< AssertionError > exceptions = new ArrayList< AssertionError >();

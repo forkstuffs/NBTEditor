@@ -241,6 +241,11 @@ public final class NBTEditorNew {
     }
 
     @NotNull
+    public static NBTEditorNew.NBTCompound of(@NotNull final ItemStack itemStack) {
+        return new NBTEditorNew.NBTCompound(itemStack);
+    }
+
+    @NotNull
     private static Class<?> getNBTTag(@NotNull final Class<?> primitiveType) {
         if (NBTEditorNew.NBTClasses.containsKey(primitiveType)) {
             return NBTEditorNew.NBTClasses.get(primitiveType);
@@ -350,6 +355,14 @@ public final class NBTEditorNew {
         public boolean lessThanOrEqualTo(@NotNull final NBTEditorNew.MinecraftVersion other) {
             return this.order <= other.order;
         }
+    }
+
+    @RequiredArgsConstructor
+    public static final class NBTCompound {
+
+        @NotNull
+        private final Object object;
+
     }
 
 }
