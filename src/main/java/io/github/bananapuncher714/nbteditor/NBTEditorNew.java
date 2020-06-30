@@ -241,8 +241,8 @@ public final class NBTEditorNew {
     }
 
     @NotNull
-    public static NBTEditorNew.NBTCompound of(@NotNull final ItemStack itemStack) {
-        return null;
+    public static NBTEditorNew.ItemStackCompound of(@NotNull final ItemStack itemStack) {
+        return new NBTEditorNew.ItemStackCompound(itemStack);
     }
 
     @NotNull
@@ -291,7 +291,7 @@ public final class NBTEditorNew {
             } catch (final IllegalAccessException ignored) {
             }
         }
-        throw new RuntimeException("The NBTVar of " + object.getClass().getSimpleName() + " not found!");
+        throw new RuntimeException("The NBT of " + object.getClass().getSimpleName() + " not found!");
     }
 
     @Nullable
@@ -312,6 +312,22 @@ public final class NBTEditorNew {
             return NBTEditorNew.getConstructor(NBTEditorNew.getNMSClass("ItemStack")).newInstance(compound);
         }
         return NBTEditorNew.getMethod("createStack").invoke(null, compound);
+    }
+
+    @Nullable
+    private static NBTEditorNew.NBTCompound getNBTTag(@NotNull final Object tag, @NotNull final Object... keys)
+        throws IllegalAccessException, InvocationTargetException {
+        Object compound = tag;
+        for (final Object key : keys) {
+            if (compound == null) {
+                return null;
+            } else if (NBTEditorNew.getNMSClass("NBTTagCompound").isInstance(compound)) {
+                compound = NBTEditorNew.getMethod("get").invoke(compound, key);
+            } else if (NBTEditorNew.getNMSClass("NBTTagList").isInstance(compound)) {
+                compound = ((List<?>) Objects.requireNonNull(NBTEditorNew.NBTListData).get(compound)).get((int) key);
+            }
+        }
+        return new NBTEditorNew.NBTCompound(compound);
     }
 
     /**
@@ -357,8 +373,19 @@ public final class NBTEditorNew {
         }
     }
 
+    public static final class ItemStackCompound extends NBTEditorNew.NBTCompound<ItemStack> {
+
+        public ItemStackCompound(@NotNull final ItemStack object) {
+            super(object);
+        }
+
+    }
+
     @RequiredArgsConstructor
-    public static final class NBTCompound {
+    public static class NBTCompound<T> {
+
+        @NotNull
+        private final T object;
 
     }
 
