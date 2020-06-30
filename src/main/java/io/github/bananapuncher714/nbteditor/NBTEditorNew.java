@@ -2,8 +2,11 @@ package io.github.bananapuncher714.nbteditor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
@@ -222,6 +225,21 @@ public final class NBTEditorNew {
         }
     }
 
+    /**
+     * Gets the Bukkit version
+     *
+     * @return The Bukkit version in standard package format
+     */
+    @NotNull
+    public static String getVersion() {
+        return NBTEditorNew.VERSION;
+    }
+
+    @NotNull
+    public static NBTEditorNew.MinecraftVersion getMinecraftVersion() {
+        return NBTEditorNew.LOCAL_VERSION;
+    }
+
     @NotNull
     private static Class<?> getNBTTag(@NotNull final Class<?> primitiveType) {
         if (NBTEditorNew.NBTClasses.containsKey(primitiveType)) {
@@ -230,30 +248,65 @@ public final class NBTEditorNew {
         return primitiveType;
     }
 
-    @Nullable
-    private static Method getMethod(final String name) {
-        return NBTEditorNew.methodCache.getOrDefault(name, null);
+    @NotNull
+    private static Method getMethod(@NotNull final String name) {
+        final Method method = NBTEditorNew.methodCache.get(name);
+        if (method == null) {
+            throw new RuntimeException("The Method called " + name + " not found!");
+        }
+        return method;
     }
 
-    @Nullable
-    private static Constructor<?> getConstructor(final Class<?> clazz) {
+    @NotNull
+    private static Constructor<?> getConstructor(@NotNull final Class<?> clazz) {
         if (NBTEditorNew.constructorCache.containsKey(clazz)) {
             return NBTEditorNew.constructorCache.get(clazz);
         }
-        return null;
+        throw new RuntimeException("Constructor of " + clazz.getSimpleName() + " not found!");
     }
 
-    @Nullable
-    private static Class<?> getNMSClass(final String name) {
+    @NotNull
+    private static Class<?> getNMSClass(@NotNull final String name) {
         if (NBTEditorNew.classCache.containsKey(name)) {
             return NBTEditorNew.classCache.get(name);
         }
         try {
             return Class.forName("net.minecraft.server." + NBTEditorNew.VERSION + '.' + name);
-        } catch (final ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
+        } catch (final ClassNotFoundException ignored) {
         }
+        throw new RuntimeException("The NMS Class called " + name + " not found!");
+    }
+
+    @NotNull
+    private static Object getNBTVar(@NotNull final Object object) {
+        final Class<?> clazz = object.getClass();
+        if (NBTEditorNew.NBTTagFieldCache.containsKey(clazz)) {
+            try {
+                return NBTEditorNew.NBTTagFieldCache.get(clazz).get(object);
+            } catch (final IllegalAccessException ignored) {
+            }
+        }
+        throw new RuntimeException("The NBTVar of " + object.getClass().getSimpleName() + " not found!");
+    }
+
+    @Nullable
+    private static String getMatch(@NotNull final String text, @NotNull final String regex) {
+        final Pattern pattern = Pattern.compile(regex);
+        final Matcher matcher = pattern.matcher(text);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
+    }
+
+    @Nullable
+    private static Object createItemStack(@NotNull final Object compound) throws IllegalAccessException,
+        InvocationTargetException, InstantiationException {
+        if (NBTEditorNew.LOCAL_VERSION == NBTEditorNew.MinecraftVersion.v1_11 ||
+            NBTEditorNew.LOCAL_VERSION == NBTEditorNew.MinecraftVersion.v1_12) {
+            return NBTEditorNew.getConstructor(NBTEditorNew.getNMSClass("ItemStack")).newInstance(compound);
+        }
+        return NBTEditorNew.getMethod("createStack").invoke(null, compound);
     }
 
     /**
