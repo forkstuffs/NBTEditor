@@ -314,22 +314,6 @@ public final class NBTEditorNew {
         return NBTEditorNew.getMethod("createStack").invoke(null, compound);
     }
 
-    @Nullable
-    private static NBTEditorNew.NBTCompound getNBTTag(@NotNull final Object tag, @NotNull final Object... keys)
-        throws IllegalAccessException, InvocationTargetException {
-        Object compound = tag;
-        for (final Object key : keys) {
-            if (compound == null) {
-                return null;
-            } else if (NBTEditorNew.getNMSClass("NBTTagCompound").isInstance(compound)) {
-                compound = NBTEditorNew.getMethod("get").invoke(compound, key);
-            } else if (NBTEditorNew.getNMSClass("NBTTagList").isInstance(compound)) {
-                compound = ((List<?>) Objects.requireNonNull(NBTEditorNew.NBTListData).get(compound)).get((int) key);
-            }
-        }
-        return new NBTEditorNew.NBTCompound(compound);
-    }
-
     /**
      * Minecraft variables as enums
      *
