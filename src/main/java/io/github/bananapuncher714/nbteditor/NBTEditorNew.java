@@ -1,5 +1,11 @@
 package io.github.bananapuncher714.nbteditor;
 
+import io.github.bananapuncher714.nbteditor.builder.CompoundBuilder;
+import io.github.bananapuncher714.nbteditor.builder.ItemStackBuilder;
+import io.github.bananapuncher714.nbteditor.tag.NBTBase;
+import io.github.bananapuncher714.nbteditor.tag.NBTCompound;
+import io.github.bananapuncher714.nbteditor.tag.NBTList;
+import io.github.bananapuncher714.nbteditor.util.MinecraftVersion;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -7,7 +13,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
@@ -30,7 +35,7 @@ public final class NBTEditorNew {
     private static final String VERSION;
 
     @NotNull
-    private static final NBTEditorNew.MinecraftVersion LOCAL_VERSION;
+    private static final MinecraftVersion LOCAL_VERSION;
 
     @Nullable
     private static Field NBTListData;
@@ -40,7 +45,7 @@ public final class NBTEditorNew {
 
     static {
         VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-        LOCAL_VERSION = Objects.requireNonNull(NBTEditorNew.MinecraftVersion.get(NBTEditorNew.VERSION));
+        LOCAL_VERSION = Objects.requireNonNull(MinecraftVersion.get(NBTEditorNew.VERSION));
         final String nmspath = "net.minecraft.server." + NBTEditorNew.VERSION + '.';
         final String cbpath = "org.bukkit.craftbukkit." + NBTEditorNew.VERSION + '.';
         final String authpath = "com.mojang.authlib.";
@@ -113,20 +118,20 @@ public final class NBTEditorNew {
             NBTEditorNew.methodCache.put("set", nbtTagCompoundClass.getMethod("set", String.class, nbtBaseClass));
             NBTEditorNew.methodCache.put("hasKey", nbtTagCompoundClass.getMethod("hasKey", String.class));
             NBTEditorNew.methodCache.put("setIndex", nbtTagListClass.getMethod("a", int.class, nbtBaseClass));
-            if (NBTEditorNew.LOCAL_VERSION.greaterThanOrEqualTo(NBTEditorNew.MinecraftVersion.v1_14)) {
+            if (NBTEditorNew.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_14)) {
                 NBTEditorNew.methodCache.put("getTypeId", nbtBaseClass.getMethod("getTypeId"));
                 NBTEditorNew.methodCache.put("add", nbtTagListClass.getMethod("add", int.class, nbtBaseClass));
             } else {
                 NBTEditorNew.methodCache.put("add", nbtTagListClass.getMethod("add", nbtBaseClass));
             }
             NBTEditorNew.methodCache.put("size", nbtTagListClass.getMethod("size"));
-            if (NBTEditorNew.LOCAL_VERSION == NBTEditorNew.MinecraftVersion.v1_8) {
+            if (NBTEditorNew.LOCAL_VERSION == MinecraftVersion.v1_8) {
                 NBTEditorNew.methodCache.put("listRemove", nbtTagListClass.getMethod("a", int.class));
             } else {
                 NBTEditorNew.methodCache.put("listRemove", nbtTagListClass.getMethod("remove", int.class));
             }
             NBTEditorNew.methodCache.put("remove", nbtTagCompoundClass.getMethod("remove", String.class));
-            if (NBTEditorNew.LOCAL_VERSION.greaterThanOrEqualTo(NBTEditorNew.MinecraftVersion.v1_13)) {
+            if (NBTEditorNew.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_13)) {
                 NBTEditorNew.methodCache.put("getKeys", nbtTagCompoundClass.getMethod("getKeys"));
             } else {
                 NBTEditorNew.methodCache.put("getKeys", nbtTagCompoundClass.getMethod("c"));
@@ -137,7 +142,7 @@ public final class NBTEditorNew {
             NBTEditorNew.methodCache.put("asNMSCopy", craftItemStackClass.getMethod("asNMSCopy", ItemStack.class));
             NBTEditorNew.methodCache.put("asBukkitCopy", craftItemStackClass.getMethod("asBukkitCopy", itemStackClass));
             NBTEditorNew.methodCache.put("getEntityHandle", craftEntityClass.getMethod("getHandle"));
-            if (NBTEditorNew.LOCAL_VERSION.greaterThanOrEqualTo(NBTEditorNew.MinecraftVersion.v1_16)) {
+            if (NBTEditorNew.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
                 NBTEditorNew.methodCache.put("getEntityTag", entityClass.getMethod("save", nbtTagCompoundClass));
                 NBTEditorNew.methodCache.put("setEntityTag", entityClass.getMethod("load", nbtTagCompoundClass));
             } else {
@@ -145,15 +150,15 @@ public final class NBTEditorNew {
                 NBTEditorNew.methodCache.put("setEntityTag", entityClass.getMethod("f", nbtTagCompoundClass));
             }
             NBTEditorNew.methodCache.put("save", itemStackClass.getMethod("save", nbtTagCompoundClass));
-            if (NBTEditorNew.LOCAL_VERSION.lessThanOrEqualTo(NBTEditorNew.MinecraftVersion.v1_10)) {
+            if (NBTEditorNew.LOCAL_VERSION.lessThanOrEqualTo(MinecraftVersion.v1_10)) {
                 NBTEditorNew.methodCache.put("createStack", itemStackClass.getMethod("createStack", nbtTagCompoundClass));
-            } else if (NBTEditorNew.LOCAL_VERSION.greaterThanOrEqualTo(NBTEditorNew.MinecraftVersion.v1_13)) {
+            } else if (NBTEditorNew.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_13)) {
                 NBTEditorNew.methodCache.put("createStack", itemStackClass.getMethod("a", nbtTagCompoundClass));
             }
-            if (NBTEditorNew.LOCAL_VERSION.greaterThanOrEqualTo(NBTEditorNew.MinecraftVersion.v1_16)) {
+            if (NBTEditorNew.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
                 NBTEditorNew.methodCache.put("setTileTag", tileEntityClass.getMethod("load", iBlockDataClass, nbtTagCompoundClass));
                 NBTEditorNew.methodCache.put("getType", worldClass.getMethod("getType", blockPositionClass));
-            } else if (NBTEditorNew.LOCAL_VERSION.greaterThanOrEqualTo(NBTEditorNew.MinecraftVersion.v1_12)) {
+            } else if (NBTEditorNew.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_12)) {
                 NBTEditorNew.methodCache.put("setTileTag", tileEntityClass.getMethod("load", nbtTagCompoundClass));
             } else {
                 NBTEditorNew.methodCache.put("setTileTag", tileEntityClass.getMethod("a", nbtTagCompoundClass));
@@ -205,8 +210,8 @@ public final class NBTEditorNew {
                 Objects.requireNonNull(gameProfileClass).getConstructor(UUID.class, String.class));
             NBTEditorNew.constructorCache.put(propertyClass,
                 Objects.requireNonNull(propertyClass).getConstructor(String.class, String.class));
-            if (NBTEditorNew.LOCAL_VERSION == NBTEditorNew.MinecraftVersion.v1_11 ||
-                NBTEditorNew.LOCAL_VERSION == NBTEditorNew.MinecraftVersion.v1_12) {
+            if (NBTEditorNew.LOCAL_VERSION == MinecraftVersion.v1_11 ||
+                NBTEditorNew.LOCAL_VERSION == MinecraftVersion.v1_12) {
                 NBTEditorNew.constructorCache.put(itemStackClass,
                     Objects.requireNonNull(itemStackClass)
                         .getConstructor(nbtTagCompoundClass));
@@ -238,62 +243,79 @@ public final class NBTEditorNew {
     }
 
     @NotNull
-    public static NBTEditorNew.MinecraftVersion getMinecraftVersion() {
+    public static MinecraftVersion getMinecraftVersion() {
         return NBTEditorNew.LOCAL_VERSION;
     }
 
     @NotNull
-    public static <T, S extends NBTEditorNew.CompoundBuilder<T, S>> S fromGeneric(@NotNull final T object) {
+    public static <T, S extends CompoundBuilder<T, S>> S genericBuilder(@NotNull final T object) {
         if (object instanceof ItemStack) {
-            return (S) NBTEditorNew.fromItemStack((ItemStack) object);
+            return (S) NBTEditorNew.itemStackBuilder((ItemStack) object);
         }
         throw new IllegalArgumentException("Object provided must be of type ItemStack, Entity, Block, or NBTCompound!");
     }
 
     @NotNull
-    public static NBTEditorNew.NBTCompound emptyCompound() {
-        final NBTEditorNew.NBTBase nbt = NBTEditorNew.fromJson("{}");
-        if (nbt instanceof NBTEditorNew.NBTCompound) {
-            return (NBTEditorNew.NBTCompound) nbt;
-        }
-        throw new RuntimeException("Something wrong!");
+    public static NBTCompound emptyCompound() {
+        return NBTEditorNew.fromJson("{}");
+    }
+
+    @NotNull
+    public static <T extends NBTBase> NBTList<T> emptyList(@NotNull final Class<T> tClass) {
+
+        throw new RuntimeException("Somethings wrong!");
     }
 
     @NotNull
     @SneakyThrows
-    public static NBTEditorNew.NBTBase fromJson(@NotNull final String json) {
-        return new NBTEditorNew.NBTCompound(
+    public static NBTCompound fromJson(@NotNull final String json) {
+        return new NBTCompound(
             NBTEditorNew.getMethod("loadNBTTagCompound").invoke(null, json));
     }
 
     @NotNull
-    public static NBTEditorNew.ItemStackBuilder fromItemStack(@NotNull final ItemStack itemStack) {
-        return new NBTEditorNew.ItemStackBuilder(itemStack);
+    public static NBTBase convertTag(@NotNull final Object object) {
+//        if (object instanceof NBTBase) {
+//            return (NBTBase) object;
+//        }
+//        if (object instanceof ItemStack) {
+//            return NBTEditorNew.convertItemStackTag((ItemStack) object);
+//        }
+//        if (object instanceof Entity) {
+//            return NBTEditorNew.convertEntityTag((Entity) object);
+//        }
+//        if (object instanceof Block) {
+//            return NBTEditorNew.convertBlockTag((Block) object);
+//        }
+//        if (NBTEditorNew.getNMSClass("NBTTagCompound").isInstance(object)) {
+//            return new NBTCompound(object);
+//        }
+//        if (NBTEditorNew.getNMSClass("NBTTagList").isInstance(object)) {
+//            return new NBTCompound(object);
+//        }
+        throw new IllegalArgumentException("Object provided must be of type ItemStack, Entity, Block, or NBTCompound!");
+    }
+
+    @NotNull
+    public static ItemStackBuilder itemStackBuilder(@NotNull final ItemStack itemStack) {
+        return new ItemStackBuilder(itemStack);
     }
 
     @NotNull
     private static Class<?> getNBTTag(@NotNull final Class<?> primitiveType) {
-        if (NBTEditorNew.NBTClasses.containsKey(primitiveType)) {
-            return NBTEditorNew.NBTClasses.get(primitiveType);
-        }
-        return primitiveType;
+        return NBTEditorNew.NBTClasses.getOrDefault(primitiveType, primitiveType);
     }
 
     @NotNull
     private static Method getMethod(@NotNull final String name) {
-        final Method method = NBTEditorNew.methodCache.get(name);
-        if (method == null) {
-            throw new RuntimeException("The Method called " + name + " not found!");
-        }
-        return method;
+        return Optional.ofNullable(NBTEditorNew.methodCache.get(name)).orElseThrow(() ->
+            new RuntimeException("The Method called " + name + " not found!"));
     }
 
     @NotNull
     private static Constructor<?> getConstructor(@NotNull final Class<?> clazz) {
-        if (NBTEditorNew.constructorCache.containsKey(clazz)) {
-            return NBTEditorNew.constructorCache.get(clazz);
-        }
-        throw new RuntimeException("Constructor of " + clazz.getSimpleName() + " not found!");
+        return Optional.ofNullable(NBTEditorNew.constructorCache.get(clazz)).orElseThrow(() ->
+            new RuntimeException("Constructor of " + clazz.getSimpleName() + " not found!"));
     }
 
     @NotNull
@@ -333,138 +355,11 @@ public final class NBTEditorNew {
     @Nullable
     private static Object createItemStack(@NotNull final Object compound) throws IllegalAccessException,
         InvocationTargetException, InstantiationException {
-        if (NBTEditorNew.LOCAL_VERSION == NBTEditorNew.MinecraftVersion.v1_11 ||
-            NBTEditorNew.LOCAL_VERSION == NBTEditorNew.MinecraftVersion.v1_12) {
+        if (NBTEditorNew.LOCAL_VERSION == MinecraftVersion.v1_11 ||
+            NBTEditorNew.LOCAL_VERSION == MinecraftVersion.v1_12) {
             return NBTEditorNew.getConstructor(NBTEditorNew.getNMSClass("ItemStack")).newInstance(compound);
         }
         return NBTEditorNew.getMethod("createStack").invoke(null, compound);
-    }
-
-    /**
-     * Minecraft variables as enums
-     *
-     * @author BananaPuncher714
-     */
-    @RequiredArgsConstructor
-    private enum MinecraftVersion {
-        v1_8("1_8", 0),
-        v1_9("1_9", 1),
-        v1_10("1_10", 2),
-        v1_11("1_11", 3),
-        v1_12("1_12", 4),
-        v1_13("1_13", 5),
-        v1_14("1_14", 6),
-        v1_15("1_15", 7),
-        v1_16("1_16", 8),
-        v1_17("1_17", 9),
-        v1_18("1_18", 10),
-        v1_19("1_19", 11);
-
-        @NotNull
-        private final String key;
-
-        private final int order;
-
-        @Nullable
-        public static NBTEditorNew.MinecraftVersion get(@NotNull final String text) {
-            return Arrays.stream(NBTEditorNew.MinecraftVersion.values())
-                .filter(version -> text.contains(version.key))
-                .findFirst()
-                .orElse(null);
-        }
-
-        // Would be really cool if we could overload operators here
-        public boolean greaterThanOrEqualTo(@NotNull final NBTEditorNew.MinecraftVersion other) {
-            return this.order >= other.order;
-        }
-
-        public boolean lessThanOrEqualTo(@NotNull final NBTEditorNew.MinecraftVersion other) {
-            return this.order <= other.order;
-        }
-    }
-
-    public interface NBTBase {
-
-    }
-
-    public static final class ItemStackBuilder extends NBTEditorNew.CompoundBuilder<ItemStack, NBTEditorNew.ItemStackBuilder> {
-
-        public ItemStackBuilder(@NotNull final ItemStack object) {
-            super(object);
-        }
-
-        @NotNull
-        @Override
-        public NBTEditorNew.ItemStackBuilder self() {
-            return this;
-        }
-
-        @NotNull
-        @Override
-        public NBTEditorNew.ItemStackBuilder createNew(@NotNull final ItemStack object) {
-            return NBTEditorNew.fromItemStack(object);
-        }
-
-        @NotNull
-        @Override
-        public ItemStack build() {
-            return this.object;
-        }
-
-    }
-
-    @RequiredArgsConstructor
-    public abstract static class CompoundBuilder<T, S extends NBTEditorNew.CompoundBuilder<T, S>> {
-
-        @NotNull
-        protected final T object;
-
-        @NotNull
-        public final S setTagIfAbsent(@NotNull final String nbt, @NotNull final String... key) {
-            return this.setTagIfAbsent(NBTEditorNew.fromJson(nbt), key);
-        }
-
-        @NotNull
-        public final S setTagIfAbsent(@NotNull final NBTEditorNew.NBTBase nbt, @NotNull final String... key) {
-            if (!this.getTag(key).isPresent()) {
-                return this.setTag(nbt, key);
-            }
-            return this.self();
-        }
-
-        @NotNull
-        public final NBTEditorNew.NBTBase getTagOrEmpty(@NotNull final String... key) {
-            return this.getTag(key)
-                .orElse(NBTEditorNew.emptyCompound());
-        }
-
-        @NotNull
-        public Optional<NBTEditorNew.NBTBase> getTag(@NotNull final String... key) {
-            return Optional.empty();
-        }
-
-        @NotNull
-        public S setTag(@NotNull final NBTEditorNew.NBTBase nbt, @NotNull final String... key) {
-            return this.createNew(this.object);
-        }
-
-        @NotNull
-        public abstract S self();
-
-        @NotNull
-        public abstract S createNew(@NotNull T object);
-
-        @NotNull
-        public abstract T build();
-
-    }
-
-    @RequiredArgsConstructor
-    public static final class NBTCompound implements NBTEditorNew.NBTBase {
-
-        @NotNull
-        private final Object nbtTagCompound;
-
     }
 
 }
