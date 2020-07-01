@@ -204,7 +204,8 @@ public final class NBTEditorNew {
                 Objects.requireNonNull(gameProfileClass).getConstructor(UUID.class, String.class));
             NBTEditorNew.constructorCache.put(propertyClass,
                 Objects.requireNonNull(propertyClass).getConstructor(String.class, String.class));
-            if (NBTEditorNew.LOCAL_VERSION == NBTEditorNew.MinecraftVersion.v1_11 || NBTEditorNew.LOCAL_VERSION == NBTEditorNew.MinecraftVersion.v1_12) {
+            if (NBTEditorNew.LOCAL_VERSION == NBTEditorNew.MinecraftVersion.v1_11 ||
+                NBTEditorNew.LOCAL_VERSION == NBTEditorNew.MinecraftVersion.v1_12) {
                 NBTEditorNew.constructorCache.put(itemStackClass,
                     Objects.requireNonNull(itemStackClass)
                         .getConstructor(nbtTagCompoundClass));
