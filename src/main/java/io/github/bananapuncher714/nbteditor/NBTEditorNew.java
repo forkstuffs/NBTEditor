@@ -241,10 +241,9 @@ public final class NBTEditorNew {
     }
 
     @NotNull
-    public static <T, S extends NBTEditorNew.CompoundBuilder<T, S>, N extends NBTEditorNew.CompoundBuilder<T, S>> N from(
-        @NotNull final T object) {
+    public static <T, S extends NBTEditorNew.CompoundBuilder<T, S>> S from(@NotNull final T object) {
         if (object instanceof ItemStack) {
-            return (N) NBTEditorNew.fromItemStack((ItemStack) object);
+            return (S) NBTEditorNew.fromItemStack((ItemStack) object);
         }
         throw new IllegalArgumentException("Object provided must be of type ItemStack, Entity, Block, or NBTCompound!");
     }
