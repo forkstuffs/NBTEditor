@@ -387,7 +387,7 @@ public final class NBTEditorNew {
 
     }
 
-    public static class ItemStackBuilder extends NBTEditorNew.CompoundBuilder<ItemStack, NBTEditorNew.ItemStackBuilder> {
+    public static final class ItemStackBuilder extends NBTEditorNew.CompoundBuilder<ItemStack, NBTEditorNew.ItemStackBuilder> {
 
         public ItemStackBuilder(@NotNull final ItemStack object) {
             super(object);
