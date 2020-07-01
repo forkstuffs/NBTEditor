@@ -1,7 +1,7 @@
 package io.github.bananapuncher714.nbteditor.builder;
 
 import io.github.bananapuncher714.nbteditor.NBTEditorNew;
-import io.github.bananapuncher714.nbteditor.tag.NBTBase;
+import io.github.bananapuncher714.nbteditor.tag.abs.NBTBase;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
