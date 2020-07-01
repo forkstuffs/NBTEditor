@@ -383,6 +383,10 @@ public final class NBTEditorNew {
         }
     }
 
+    public interface NBTBase {
+
+    }
+
     public static class ItemStackBuilder extends NBTEditorNew.CompoundBuilder<ItemStack, NBTEditorNew.ItemStackBuilder> {
 
         public ItemStackBuilder(@NotNull final ItemStack object) {
@@ -451,14 +455,10 @@ public final class NBTEditorNew {
     }
 
     @RequiredArgsConstructor
-    public static final class NBTCompound extends NBTEditorNew.NBTBase {
+    public static final class NBTCompound implements NBTEditorNew.NBTBase {
 
         @NotNull
         private final Object nbtTagCompound;
-
-    }
-
-    public abstract static class NBTBase {
 
     }
 
