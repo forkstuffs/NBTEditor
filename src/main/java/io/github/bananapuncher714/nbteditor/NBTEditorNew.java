@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -250,20 +251,19 @@ public final class NBTEditorNew {
     }
 
     @NotNull
-    public static Optional<NBTEditorNew.NBTCompound> emptyCompound() {
-        return NBTEditorNew.fromJson("{}")
-            .map(NBTEditorNew.NBTCompound::new);
+    public static NBTEditorNew.NBTCompound emptyCompound() {
+        final NBTEditorNew.NBTBase nbt = NBTEditorNew.fromJson("{}");
+        if (nbt instanceof NBTEditorNew.NBTCompound) {
+            return (NBTEditorNew.NBTCompound) nbt;
+        }
+        throw new RuntimeException("Something wrong!");
     }
 
     @NotNull
-    public static Optional<NBTEditorNew.NBTBase> fromJson(@NotNull final String json) {
-        try {
-            return Optional.of(new NBTEditorNew.NBTCompound(
-                NBTEditorNew.getMethod("loadNBTTagCompound").invoke(null, json)));
-        } catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return Optional.empty();
+    @SneakyThrows
+    public static NBTEditorNew.NBTBase fromJson(@NotNull final String json) {
+        return new NBTEditorNew.NBTCompound(
+            NBTEditorNew.getMethod("loadNBTTagCompound").invoke(null, json));
     }
 
     @NotNull
@@ -424,9 +424,7 @@ public final class NBTEditorNew {
 
         @NotNull
         public final S setTagIfAbsent(@NotNull final String nbt, @NotNull final String... key) {
-            return NBTEditorNew.fromJson(nbt)
-                .map(nbtBase -> this.setTagIfAbsent(nbtBase, key))
-                .orElseGet(this::self);
+            return this.setTagIfAbsent(NBTEditorNew.fromJson(nbt), key);
         }
 
         @NotNull
@@ -440,7 +438,7 @@ public final class NBTEditorNew {
         @NotNull
         public final NBTEditorNew.NBTBase getTagOrEmpty(@NotNull final String... key) {
             return this.getTag(key)
-                .orElse(new NBTEditorNew.NBTCompound(NBTEditorNew.fromJson("{}")));
+                .orElse(NBTEditorNew.emptyCompound());
         }
 
         @NotNull
