@@ -414,13 +414,19 @@ public final class NBTEditorNew {
             return this;
         }
 
+        @NotNull
+        @Override
+        public ItemStack build() {
+            return this.object;
+        }
+
     }
 
     @RequiredArgsConstructor
     public abstract static class CompoundBuilder<T, S extends NBTEditorNew.CompoundBuilder<T, S>> {
 
         @NotNull
-        private final T object;
+        protected final T object;
 
         @NotNull
         public final S setTagIfAbsent(@NotNull final String nbt, @NotNull final String... key) {
@@ -449,6 +455,9 @@ public final class NBTEditorNew {
 
         @NotNull
         public abstract S self();
+
+        @NotNull
+        public abstract T build();
 
     }
 

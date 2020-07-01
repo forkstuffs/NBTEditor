@@ -10,10 +10,10 @@ public class NewTests {
 
     public void test() {
         final ItemStack itemStack = new ItemStack(Material.DIAMOND);
-        NBTEditorNew.ItemStackBuilder builder = NBTEditorNew.fromItemStack(itemStack);
-        builder
+        final ItemStack newItemStack = NBTEditorNew.fromItemStack(itemStack)
             .setTagIfAbsent("object", "path", "to", "tag")
-            .self();
+            .build();
+
     }
 
 }
