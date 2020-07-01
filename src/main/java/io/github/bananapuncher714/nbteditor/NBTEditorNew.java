@@ -243,7 +243,7 @@ public final class NBTEditorNew {
     }
 
     @NotNull
-    public static <T, S extends NBTEditorNew.CompoundBuilder<T, S>> S from(@NotNull final T object) {
+    public static <T, S extends NBTEditorNew.CompoundBuilder<T, S>> S fromGeneric(@NotNull final T object) {
         if (object instanceof ItemStack) {
             return (S) NBTEditorNew.fromItemStack((ItemStack) object);
         }
@@ -395,23 +395,14 @@ public final class NBTEditorNew {
 
         @NotNull
         @Override
-        public Optional<NBTEditorNew.NBTBase> getTag(@NotNull final String... key) {
-
-            return Optional.empty();
-        }
-
-        @NotNull
-        @Override
-        public NBTEditorNew.ItemStackBuilder setTag(@NotNull final NBTEditorNew.NBTBase nbt,
-                                                    @NotNull final String... key) {
-
-            return this.self();
-        }
-
-        @NotNull
-        @Override
         public NBTEditorNew.ItemStackBuilder self() {
             return this;
+        }
+
+        @NotNull
+        @Override
+        public NBTEditorNew.ItemStackBuilder createNew(@NotNull final ItemStack object) {
+            return NBTEditorNew.fromItemStack(object);
         }
 
         @NotNull
@@ -448,13 +439,20 @@ public final class NBTEditorNew {
         }
 
         @NotNull
-        public abstract Optional<NBTEditorNew.NBTBase> getTag(@NotNull String... key);
+        public Optional<NBTEditorNew.NBTBase> getTag(@NotNull final String... key) {
+            return Optional.empty();
+        }
 
         @NotNull
-        public abstract S setTag(@NotNull NBTEditorNew.NBTBase nbt, @NotNull String... key);
+        public S setTag(@NotNull final NBTEditorNew.NBTBase nbt, @NotNull final String... key) {
+            return this.createNew(this.object);
+        }
 
         @NotNull
         public abstract S self();
+
+        @NotNull
+        public abstract S createNew(@NotNull T object);
 
         @NotNull
         public abstract T build();
