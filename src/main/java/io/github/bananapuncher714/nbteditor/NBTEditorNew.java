@@ -241,7 +241,8 @@ public final class NBTEditorNew {
     }
 
     @NotNull
-    public static <T, N extends NBTEditorNew.NBTCompound<T>> N from(@NotNull final T object) {
+    public static <T, S extends NBTEditorNew.CompoundBuilder<T, S>, N extends NBTEditorNew.CompoundBuilder<T, S>> N from(
+        @NotNull final T object) {
         if (object instanceof ItemStack) {
             return (N) NBTEditorNew.fromItemStack((ItemStack) object);
         }
@@ -249,8 +250,8 @@ public final class NBTEditorNew {
     }
 
     @NotNull
-    public static NBTEditorNew.ItemStackCompound fromItemStack(@NotNull final ItemStack itemStack) {
-        return new NBTEditorNew.ItemStackCompound(itemStack);
+    public static NBTEditorNew.ItemStackBuilder fromItemStack(@NotNull final ItemStack itemStack) {
+        return new NBTEditorNew.ItemStackBuilder(itemStack);
     }
 
     @NotNull
@@ -365,19 +366,72 @@ public final class NBTEditorNew {
         }
     }
 
-    public static final class ItemStackCompound extends NBTEditorNew.NBTCompound<ItemStack> {
+    public static class ItemStackBuilder extends NBTEditorNew.CompoundBuilder<ItemStack, NBTEditorNew.ItemStackBuilder> {
 
-        public ItemStackCompound(@NotNull final ItemStack object) {
+        public ItemStackBuilder(@NotNull final ItemStack object) {
             super(object);
+        }
+
+        @NotNull
+        @Override
+        public Optional<NBTEditorNew.NBTCompound> getTag(@NotNull final String... key) {
+
+            return Optional.empty();
+        }
+
+        @NotNull
+        @Override
+        public NBTEditorNew.ItemStackBuilder setTag(@NotNull final Object object, @NotNull final String... key) {
+
+            return this.self();
+        }
+
+        @NotNull
+        @Override
+        public NBTEditorNew.ItemStackBuilder self() {
+            return this;
         }
 
     }
 
     @RequiredArgsConstructor
-    public static class NBTCompound<T> {
+    public abstract static class CompoundBuilder<T, S extends NBTEditorNew.CompoundBuilder<T, S>> {
 
         @NotNull
         private final T object;
+
+        @NotNull
+        public S setTagIfAbsent(@NotNull final Object object, @NotNull final String... key) {
+            if (!this.getTag(key).isPresent()) {
+                return this.setTag(object, key);
+            }
+            return this.self();
+        }
+
+        @NotNull
+        public NBTEditorNew.NBTCompound getTagOrEmpty(@NotNull final String... key) {
+            return this.getTag(key).orElse(new NBTEditorNew.NBTCompound());
+        }
+
+        @NotNull
+        public abstract Optional<NBTEditorNew.NBTCompound> getTag(@NotNull String... key);
+
+        @NotNull
+        public abstract S setTag(@NotNull Object object, @NotNull String... key);
+
+        @NotNull
+        public abstract S self();
+
+    }
+
+    public static final class NBTCompound {
+
+        @NotNull
+        private final Map<String, NBTEditorNew.NBTBase> data = new HashMap<>();
+
+    }
+
+    public abstract static class NBTBase {
 
     }
 

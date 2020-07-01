@@ -10,8 +10,10 @@ public class NewTests {
 
     public void test() {
         final ItemStack itemStack = new ItemStack(Material.DIAMOND);
-        final NBTEditorNew.ItemStackCompound compound = NBTEditorNew.from(itemStack);
-
+        NBTEditorNew.ItemStackBuilder builder = NBTEditorNew.fromItemStack(itemStack);
+        builder
+            .setTagIfAbsent("object", "path", "to", "tag")
+            .self();
     }
 
 }
