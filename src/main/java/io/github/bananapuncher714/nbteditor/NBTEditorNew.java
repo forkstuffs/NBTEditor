@@ -451,7 +451,7 @@ public final class NBTEditorNew {
         public abstract Optional<NBTEditorNew.NBTBase> getTag(@NotNull String... key);
 
         @NotNull
-        public abstract S setTag(@NotNull NBTEditorNew.NBTBase nbtBase, @NotNull String... key);
+        public abstract S setTag(@NotNull NBTEditorNew.NBTBase nbt, @NotNull String... key);
 
         @NotNull
         public abstract S self();
