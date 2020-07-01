@@ -250,6 +250,23 @@ public final class NBTEditorNew {
     }
 
     @NotNull
+    public static Optional<NBTEditorNew.NBTCompound> emptyCompound() {
+        return NBTEditorNew.fromJson("{}")
+            .map(NBTEditorNew.NBTCompound::new);
+    }
+
+    @NotNull
+    public static Optional<NBTEditorNew.NBTBase> fromJson(@NotNull final String json) {
+        try {
+            return Optional.of(new NBTEditorNew.NBTCompound(
+                NBTEditorNew.getMethod("loadNBTTagCompound").invoke(null, json)));
+        } catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    @NotNull
     public static NBTEditorNew.ItemStackBuilder fromItemStack(@NotNull final ItemStack itemStack) {
         return new NBTEditorNew.ItemStackBuilder(itemStack);
     }
@@ -374,14 +391,15 @@ public final class NBTEditorNew {
 
         @NotNull
         @Override
-        public Optional<NBTEditorNew.NBTCompound> getTag(@NotNull final String... key) {
+        public Optional<NBTEditorNew.NBTBase> getTag(@NotNull final String... key) {
 
             return Optional.empty();
         }
 
         @NotNull
         @Override
-        public NBTEditorNew.ItemStackBuilder setTag(@NotNull final Object object, @NotNull final String... key) {
+        public NBTEditorNew.ItemStackBuilder setTag(@NotNull final NBTEditorNew.NBTBase nbt,
+                                                    @NotNull final String... key) {
 
             return this.self();
         }
@@ -401,33 +419,42 @@ public final class NBTEditorNew {
         private final T object;
 
         @NotNull
-        public S setTagIfAbsent(@NotNull final Object object, @NotNull final String... key) {
+        public final S setTagIfAbsent(@NotNull final String nbt, @NotNull final String... key) {
+            return NBTEditorNew.fromJson(nbt)
+                .map(nbtBase -> this.setTagIfAbsent(nbtBase, key))
+                .orElseGet(this::self);
+        }
+
+        @NotNull
+        public final S setTagIfAbsent(@NotNull final NBTEditorNew.NBTBase nbt, @NotNull final String... key) {
             if (!this.getTag(key).isPresent()) {
-                return this.setTag(object, key);
+                return this.setTag(nbt, key);
             }
             return this.self();
         }
 
         @NotNull
-        public NBTEditorNew.NBTCompound getTagOrEmpty(@NotNull final String... key) {
-            return this.getTag(key).orElse(new NBTEditorNew.NBTCompound());
+        public final NBTEditorNew.NBTBase getTagOrEmpty(@NotNull final String... key) {
+            return this.getTag(key)
+                .orElse(new NBTEditorNew.NBTCompound(NBTEditorNew.fromJson("{}")));
         }
 
         @NotNull
-        public abstract Optional<NBTEditorNew.NBTCompound> getTag(@NotNull String... key);
+        public abstract Optional<NBTEditorNew.NBTBase> getTag(@NotNull String... key);
 
         @NotNull
-        public abstract S setTag(@NotNull Object object, @NotNull String... key);
+        public abstract S setTag(@NotNull NBTEditorNew.NBTBase nbtBase, @NotNull String... key);
 
         @NotNull
         public abstract S self();
 
     }
 
-    public static final class NBTCompound {
+    @RequiredArgsConstructor
+    public static final class NBTCompound extends NBTEditorNew.NBTBase {
 
         @NotNull
-        private final Map<String, NBTEditorNew.NBTBase> data = new HashMap<>();
+        private final Object nbtTagCompound;
 
     }
 
