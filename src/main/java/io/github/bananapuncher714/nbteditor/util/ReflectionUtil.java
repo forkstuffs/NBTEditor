@@ -15,7 +15,6 @@ public class ReflectionUtil {
     static {
         try {
             // Caching Methods
-            ReflectionUtil.methodCache.put("getEntityHandle", craftEntityClass.getMethod("getHandle"));
             if (ReflectionUtil.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
                 ReflectionUtil.methodCache.put("setTileTag", tileEntityClass.getMethod("load", iBlockDataClass, nbtTagCompoundClass));
                 ReflectionUtil.methodCache.put("getType", worldClass.getMethod("getType", blockPositionClass));

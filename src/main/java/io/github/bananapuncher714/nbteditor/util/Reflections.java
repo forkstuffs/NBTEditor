@@ -123,6 +123,8 @@ public class Reflections {
                 }
                 return methods;
             });
+            final Map<String, Method> craftEntityClassMethods = Reflections.cacheMethods(craftEntityClass, aClass ->
+                Collections.singletonList(aClass.getMethod("getHandle")));
 
             // Caching Fields
             final Map<String, Field> nbtTagCompoundClassFields = Reflections.cacheFields(nbtTagCompoundClass, aClass ->
@@ -150,6 +152,8 @@ public class Reflections {
             Reflections.addReference(mojansonParserClass, null, mojansonParserClassMethods, new HashMap<>());
             Reflections.addReference(itemStackClass, itemStackClassConstructor, itemStackClassMethods, new HashMap<>());
             Reflections.addReference(craftItemStackClass, null, craftItemStackClassMethods, new HashMap<>());
+            Reflections.addReference(entityClass, null, entityClassMethods, new HashMap<>());
+            Reflections.addReference(craftEntityClass, null, craftEntityClassMethods, new HashMap<>());
         } catch (final Exception e) {
             e.printStackTrace();
         }
