@@ -128,17 +128,17 @@ public class Reflections {
             Reflections.cacheMethods(tileEntityClass, aClass -> {
                 final Map<String, Method> methods = new HashMap<>();
                 if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
-                    methods.put("load", tileEntityClass.getMethod("load", iBlockDataClass, nbtTagCompoundClass));
+                    methods.put("load", aClass.getMethod("load", iBlockDataClass, nbtTagCompoundClass));
                 } else if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_12)) {
-                    methods.put("load", tileEntityClass.getMethod("load", nbtTagCompoundClass));
+                    methods.put("load", aClass.getMethod("load", nbtTagCompoundClass));
                 } else {
-                    methods.put("load", tileEntityClass.getMethod("a", nbtTagCompoundClass));
+                    methods.put("load", aClass.getMethod("a", nbtTagCompoundClass));
                 }
                 try {
-                    methods.put("save", tileEntityClass.getMethod("save", nbtTagCompoundClass));
+                    methods.put("save", aClass.getMethod("save", nbtTagCompoundClass));
                 } catch (final NoSuchMethodException exception) {
                     try {
-                        methods.put("save", tileEntityClass.getMethod("b", nbtTagCompoundClass));
+                        methods.put("save", aClass.getMethod("b", nbtTagCompoundClass));
                     } catch (final NoSuchMethodException e) {
                         e.printStackTrace();
                     }
