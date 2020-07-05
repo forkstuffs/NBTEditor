@@ -216,26 +216,24 @@ public class Reflections {
     }
 
     @NotNull
-    public Optional<Constructor<?>> findConstructor(@NotNull final String key) {
-        return Reflections.findReference(key)
-            .flatMap(Reference::getConstructor);
+    public Constructor<?> findConstructor(@NotNull final String key) {
+        return Reflections.findReference(key).getConstructor();
     }
 
     @NotNull
-    public Optional<Method> findMethod(@NotNull final String key, @NotNull final String name) {
-        return Reflections.findReference(key)
-            .flatMap(reference -> reference.getMethod(name));
+    public Method findMethod(@NotNull final String key, @NotNull final String name) {
+        return Reflections.findReference(key).getMethod(name);
     }
 
     @NotNull
-    public Optional<Field> findField(@NotNull final String key, @NotNull final String name) {
-        return Reflections.findReference(key)
-            .flatMap(reference -> reference.getField(name));
+    public Field findField(@NotNull final String key, @NotNull final String name) {
+        return Reflections.findReference(key).getField(name);
     }
 
     @NotNull
-    public Optional<Reference> findReference(@NotNull final String key) {
-        return Optional.ofNullable(Reflections.REF.get(key));
+    public Reference findReference(@NotNull final String key) {
+        return Optional.ofNullable(Reflections.REF.get(key)).orElseThrow(() ->
+            new RuntimeException("Reference called + " + key + " not found!"));
     }
 
     @NotNull

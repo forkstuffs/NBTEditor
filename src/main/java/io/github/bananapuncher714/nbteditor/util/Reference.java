@@ -31,18 +31,21 @@ public final class Reference {
     private final Map<String, Field> fields;
 
     @NotNull
-    public Optional<Constructor<?>> getConstructor() {
-        return Optional.ofNullable(this.constructor);
+    public Constructor<?> getConstructor() {
+        return Optional.ofNullable(this.constructor).orElseThrow(() ->
+            new RuntimeException("There is no registed constructor for " + this.key + " in " + this.aClass.getSimpleName() + " class!"));
     }
 
     @NotNull
-    public Optional<Method> getMethod(@NotNull final String name) {
-        return Optional.ofNullable(this.methods.get(name));
+    public Method getMethod(@NotNull final String name) {
+        return Optional.ofNullable(this.methods.get(name)).orElseThrow(() ->
+            new RuntimeException("The method of key called " + this.key + " not found in " + this.aClass.getSimpleName() + " class!"));
     }
 
     @NotNull
-    public Optional<Field> getField(@NotNull final String name) {
-        return Optional.ofNullable(this.fields.get(name));
+    public Field getField(@NotNull final String name) {
+        return Optional.ofNullable(this.fields.get(name)).orElseThrow(() ->
+            new RuntimeException("The field called " + name + " of key called " + this.key + " not found in " + this.aClass.getSimpleName() + " class!"));
     }
 
 }

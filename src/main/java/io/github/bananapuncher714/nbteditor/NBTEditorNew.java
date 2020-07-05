@@ -63,7 +63,7 @@ public final class NBTEditorNew {
     @SneakyThrows
     public static NBTCompound fromJson(@NotNull final String json) {
         return new NBTCompound(
-            ReflectionUtil.getMethod("loadNBTTagCompound").invoke(null, json));
+            Reflections.findMethod("MojangsonParser", "loadNBTTagCompound").invoke(null, json));
     }
 
     @NotNull
@@ -92,26 +92,6 @@ public final class NBTEditorNew {
     @NotNull
     public static ItemStackBuilder itemStackBuilder(@NotNull final ItemStack itemStack) {
         return new ItemStackBuilder(itemStack);
-    }
-
-    @Nullable
-    private static String getMatch(@NotNull final String text, @NotNull final String regex) {
-        final Pattern pattern = Pattern.compile(regex);
-        final Matcher matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return null;
-    }
-
-    @Nullable
-    private static Object createItemStack(@NotNull final Object compound) throws IllegalAccessException,
-        InvocationTargetException, InstantiationException {
-        if (ReflectionUtil.LOCAL_VERSION == MinecraftVersion.v1_11 ||
-            ReflectionUtil.LOCAL_VERSION == MinecraftVersion.v1_12) {
-            return ReflectionUtil.getConstructor(ReflectionUtil.getNMSClass("ItemStack")).newInstance(compound);
-        }
-        return ReflectionUtil.getMethod("createStack").invoke(null, compound);
     }
 
 }
