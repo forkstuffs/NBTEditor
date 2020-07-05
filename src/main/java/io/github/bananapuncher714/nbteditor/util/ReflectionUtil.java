@@ -16,12 +16,7 @@ public class ReflectionUtil {
         try {
             // Caching Methods
             if (ReflectionUtil.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
-                ReflectionUtil.methodCache.put("setTileTag", tileEntityClass.getMethod("load", iBlockDataClass, nbtTagCompoundClass));
                 ReflectionUtil.methodCache.put("getType", worldClass.getMethod("getType", blockPositionClass));
-            } else if (ReflectionUtil.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_12)) {
-                ReflectionUtil.methodCache.put("setTileTag", tileEntityClass.getMethod("load", nbtTagCompoundClass));
-            } else {
-                ReflectionUtil.methodCache.put("setTileTag", tileEntityClass.getMethod("a", nbtTagCompoundClass));
             }
             ReflectionUtil.methodCache.put("getTileEntity", worldClass.getMethod("getTileEntity", blockPositionClass));
             ReflectionUtil.methodCache.put("getWorldHandle", craftWorldClass.getMethod("getHandle"));
