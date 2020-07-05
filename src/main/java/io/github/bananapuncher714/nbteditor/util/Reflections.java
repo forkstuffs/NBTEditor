@@ -278,7 +278,7 @@ public class Reflections {
     public Optional<Reference> findReference(@NotNull final String key) {
         return Optional.ofNullable(Reflections.REF.get(key));
     }
-    
+
     @NotNull
     private Class<?> findNMSClass(@NotNull final String classPath) throws ClassNotFoundException {
         return Reflections.findClass(Reflections.nmspath + classPath);
