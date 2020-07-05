@@ -41,7 +41,6 @@ public class Reflections {
             final Class<?> craftMetaSkullClass = Reflections.findCBClass("inventory.CraftMetaSkull");
             final Class<?> entityClass = Reflections.findNMSClass("Entity");
             final Class<?> craftEntityClass = Reflections.findCBClass("entity.CraftEntity");
-            final Class<?> entityLivingClass = Reflections.findNMSClass("EntityLiving");
             final Class<?> craftWorldClass = Reflections.findCBClass("CraftWorld");
             final Class<?> craftBlockStateClass = Reflections.findCBClass("block." + "CraftBlockState");
             final Class<?> blockPositionClass = Reflections.findNMSClass("BlockPosition");
