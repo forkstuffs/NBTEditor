@@ -15,10 +15,6 @@ public class ReflectionUtil {
     static {
         try {
             // Caching Methods
-            if (ReflectionUtil.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
-                ReflectionUtil.methodCache.put("getType", worldClass.getMethod("getType", blockPositionClass));
-            }
-            ReflectionUtil.methodCache.put("getTileEntity", worldClass.getMethod("getTileEntity", blockPositionClass));
             ReflectionUtil.methodCache.put("getWorldHandle", craftWorldClass.getMethod("getHandle"));
             ReflectionUtil.methodCache.put("setGameProfile", tileEntitySkullClass.getMethod("setGameProfile", gameProfileClass));
             ReflectionUtil.methodCache.put("getProperties", gameProfileClass.getMethod("getProperties"));

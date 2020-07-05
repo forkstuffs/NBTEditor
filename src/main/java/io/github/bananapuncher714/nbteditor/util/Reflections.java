@@ -147,6 +147,14 @@ public class Reflections {
                 }
                 return methods;
             });
+            Reflections.cacheMethods(worldClass, aClass -> {
+                final Map<String, Method> methods = new HashMap<>();
+                if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
+                    methods.put("getType", aClass.getMethod("getType", blockPositionClass));
+                }
+                methods.put("getTileEntity", aClass.getMethod("getTileEntity", blockPositionClass));
+                return methods;
+            });
 
             // Caching Fields
             final Map<String, Field> nbtTagCompoundClassFields = Reflections.cacheFields(nbtTagCompoundClass, aClass ->
