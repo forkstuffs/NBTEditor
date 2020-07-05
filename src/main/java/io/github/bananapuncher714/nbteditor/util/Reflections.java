@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
@@ -67,6 +66,9 @@ public class Reflections {
             final Class<?> nbtTagIntArrayClass = Reflections.findNMSClass("NBTTagIntArray");
             final Class<?> byteArrayClass = Reflections.findClass("[B");
             final Class<?> intArrayClass = Reflections.findClass("[I");
+            final List<Class<?>> nbtClasses = Arrays.asList(nbtTagByteClass, nbtTagStringClass, nbtTagDoubleClass,
+                nbtTagIntClass, nbtTagLongClass, nbtTagShortClass, nbtTagFloatClass, nbtTagByteArrayClass,
+                nbtTagByteArrayClass, nbtTagIntArrayClass, byteArrayClass, intArrayClass);
 
             // Caching Methods
             final Map<String, Method> nbtBaseClassMethods = Reflections.cacheMethods(nbtBaseClass, aClass ->
@@ -161,20 +163,26 @@ public class Reflections {
                 Collections.singletonMap("setGameProfile", aClass.getMethod("setGameProfile", gameProfileClass)));
             final Map<String, Method> gameProfileClassMethods = Reflections.cacheMethods(gameProfileClass, aClass ->
                 Collections.singletonMap("getProperties", aClass.getMethod("getProperties")));
+            final Map<String, Method> propertyClassMethods = Reflections.cacheMethods(propertyClass, aClass -> {
+                final Map<String, Method> methods = new HashMap<>();
+                methods.put("getName", aClass.getMethod("getName"));
+                methods.put("getValue", aClass.getMethod("getValue"));
+                return methods;
+            });
+            final Map<String, Method> propertyMapClassMethods = Reflections.cacheMethods(propertyMapClass, aClass -> {
+                final Map<String, Method> methods = new HashMap<>();
+                methods.put("values", propertyMapClass.getMethod("values"));
+                methods.put("put", propertyMapClass.getMethod("put", Object.class, Object.class));
+                return methods;
+            });
 
             /*
-            Reflections.cacheMethods(worldClass, aClass -> {
+            Reflections.cacheMethods(, aClass -> {
                 final Map<String, Method> methods = new HashMap<>();
 
                 return methods;
             });
             */
-
-            // Caching Fields
-            final Map<String, Field> nbtTagCompoundClassFields = Reflections.cacheFields(nbtTagCompoundClass, aClass ->
-                Collections.singletonList(aClass.getDeclaredField("map")));
-            final Map<String, Field> nbtTagListClassFields = Reflections.cacheFields(nbtTagListClass, aClass ->
-                Collections.singletonList(aClass.getDeclaredField("list")));
 
             // Caching Constructors
             @Nullable final Constructor<?> itemStackClassConstructor;
@@ -185,32 +193,79 @@ public class Reflections {
                 itemStackClassConstructor = null;
             }
             final Constructor<?> gameProfileClassConstructor = gameProfileClass.getConstructor(UUID.class, String.class);
+            final Constructor<?> propertyClassConstructor = propertyClass.getConstructor(String.class, String.class);
+            final Constructor<?> blockPositionClassConstructor = blockPositionClass.getConstructor(int.class, int.class, int.class);
+            final Constructor<?> nbtTagByteClassConstructor = nbtTagByteClass.getDeclaredConstructor(byte.class);
+            final Constructor<?> nbtTagStringClassConstructor = nbtTagStringClass.getDeclaredConstructor(String.class);
+            final Constructor<?> nbtTagDoubleClassConstructor = nbtTagDoubleClass.getDeclaredConstructor(double.class);
+            final Constructor<?> nbtTagIntClassConstructor = nbtTagIntClass.getDeclaredConstructor(int.class);
+            final Constructor<?> nbtTagLongClassConstructor = nbtTagLongClass.getDeclaredConstructor(long.class);
+            final Constructor<?> nbtTagFloatClassConstructor = nbtTagFloatClass.getDeclaredConstructor(float.class);
+            final Constructor<?> nbtTagShortClassConstructor = nbtTagShortClass.getDeclaredConstructor(short.class);
+            final Constructor<?> nbtTagByteArrayClassConstructor = nbtTagByteArrayClass.getDeclaredConstructor(byteArrayClass);
+            final Constructor<?> nbtTagIntArrayClassConstructor = nbtTagIntArrayClass.getDeclaredConstructor(intArrayClass);
+            final List<Constructor<?>> nbtConstructors = Arrays.asList(nbtTagByteClassConstructor,
+                nbtTagStringClassConstructor, nbtTagDoubleClassConstructor, nbtTagIntClassConstructor,
+                nbtTagIntClassConstructor, nbtTagLongClassConstructor, nbtTagFloatClassConstructor,
+                nbtTagShortClassConstructor, nbtTagByteArrayClassConstructor, nbtTagIntArrayClassConstructor);
+            nbtConstructors.forEach(cons -> cons.setAccessible(true));
+            for (final Class<?> nbtClass : nbtClasses) {
+                final Field data = nbtClass.getDeclaredField("data");
+                data.setAccessible(true);
+                map.put(nbtClass, data);
+            }
+
+            // Caching Fields
+            final Map<String, Field> nbtTagCompoundClassFields = Reflections.cacheFields(nbtTagCompoundClass, aClass ->
+                Collections.singletonList(aClass.getDeclaredField("map")));
+            final Map<String, Field> nbtTagListClassFields = Reflections.cacheFields(nbtTagListClass, aClass ->
+                Collections.singletonList(aClass.getDeclaredField("list")));
 
             // Caching References
             nbtTagListClassFields.forEach((s, field) -> field.setAccessible(true));
             nbtTagCompoundClassFields.forEach((s, field) -> field.setAccessible(true));
             craftMetaSkullClassMethods.forEach((s, method) -> method.setAccessible(true));
 
-            Reflections.addReference(nbtBaseClass, null, nbtBaseClassMethods, new HashMap<>());
-            Reflections.addReference(nbtTagCompoundClass, null, nbtTagCompoundClassMethods, nbtTagCompoundClassFields);
-            Reflections.addReference(nbtTagListClass, null, new HashMap<>(), nbtTagListClassFields);
-            Reflections.addReference(mojansonParserClass, null, mojansonParserClassMethods, new HashMap<>());
-            Reflections.addReference(itemStackClass, itemStackClassConstructor, itemStackClassMethods, new HashMap<>());
-            Reflections.addReference(craftItemStackClass, null, craftItemStackClassMethods, new HashMap<>());
-            Reflections.addReference(entityClass, null, entityClassMethods, new HashMap<>());
-            Reflections.addReference(craftEntityClass, null, craftEntityClassMethods, new HashMap<>());
-            Reflections.addReference(tileEntityClass, null, tileEntityClassMethods, new HashMap<>());
-            Reflections.addReference(worldClass, null, worldClassMethods, new HashMap<>());
-            Reflections.addReference(craftWorldClass, null, craftWorldClassMethods, new HashMap<>());
-            Reflections.addReference(tileEntitySkullClass, null, tileEntitySkullClassMethods, new HashMap<>());
-            Reflections.addReference(gameProfileClass, gameProfileClassConstructor, gameProfileClassMethods, new HashMap<>());
+            Reflections.addReference(nbtBaseClass, nbtBaseClassMethods);
+            Reflections.addReference(nbtTagCompoundClass, nbtTagCompoundClassMethods, nbtTagCompoundClassFields);
+            Reflections.addReference(nbtTagListClass, new HashMap<>(), nbtTagListClassFields);
+            Reflections.addReference(mojansonParserClass, mojansonParserClassMethods);
+            Reflections.addReference(itemStackClass, itemStackClassConstructor, itemStackClassMethods);
+            Reflections.addReference(craftItemStackClass, craftItemStackClassMethods);
+            Reflections.addReference(entityClass, entityClassMethods);
+            Reflections.addReference(craftEntityClass, craftEntityClassMethods);
+            Reflections.addReference(tileEntityClass, tileEntityClassMethods);
+            Reflections.addReference(worldClass, worldClassMethods);
+            Reflections.addReference(craftWorldClass, craftWorldClassMethods);
+            Reflections.addReference(tileEntitySkullClass, tileEntitySkullClassMethods);
+            Reflections.addReference(gameProfileClass, gameProfileClassConstructor, gameProfileClassMethods);
+            Reflections.addReference(propertyClass, propertyClassConstructor, propertyClassMethods);
+            Reflections.addReference(propertyMapClass, propertyMapClassMethods);
+            Reflections.addReference(blockPositionClass, blockPositionClassConstructor, new HashMap<>());
         } catch (final Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void addReference(@NotNull final Class<?> aClass,
-                              @Nullable final Constructor<?> constructors,
+    private void addReference(@NotNull final Class<?> aClass, @Nullable final Constructor<?> constructors) {
+        Reflections.addReference(aClass.getSimpleName(), aClass, constructors, null, null);
+    }
+
+    private void addReference(@NotNull final Class<?> aClass, @NotNull final Map<String, Method> methods) {
+        Reflections.addReference(aClass.getSimpleName(), aClass, null, methods, new HashMap<>());
+    }
+
+    private void addReference(@NotNull final Class<?> aClass, @Nullable final Constructor<?> constructors,
+                              @NotNull final Map<String, Method> methods) {
+        Reflections.addReference(aClass.getSimpleName(), aClass, constructors, methods, new HashMap<>());
+    }
+
+    private void addReference(@NotNull final Class<?> aClass, @NotNull final Map<String, Method> methods,
+                              @NotNull final Map<String, Field> fields) {
+        Reflections.addReference(aClass.getSimpleName(), aClass, null, methods, fields);
+    }
+
+    private void addReference(@NotNull final Class<?> aClass, @Nullable final Constructor<?> constructors,
                               @NotNull final Map<String, Method> methods,
                               @NotNull final Map<String, Field> fields) {
         Reflections.addReference(aClass.getSimpleName(), aClass, constructors, methods, fields);
@@ -218,8 +273,7 @@ public class Reflections {
 
     @NotNull
     private void addReference(@NotNull final String key, @NotNull final Class<?> aClass,
-                              @Nullable final Constructor<?> constructors,
-                              @NotNull final Map<String, Method> methods,
+                              @Nullable final Constructor<?> constructors, @NotNull final Map<String, Method> methods,
                               @NotNull final Map<String, Field> fields) {
         Reflections.REF.put(key, new Reflections.Reference(key, aClass, constructors, methods, fields));
     }
@@ -253,9 +307,8 @@ public class Reflections {
 
     @NotNull
     private Map<String, Field> cacheFields(@NotNull final Class<?> classKey,
-                                           @NotNull final ThrowableFunction<Class<?>, List<Field>> func) throws Exception {
-        return func.apply(classKey).stream()
-            .collect(Collectors.toMap(Field::getName, field -> field));
+                                           @NotNull final ThrowableFunction<Class<?>, Map<String, Field>> func) throws Exception {
+        return func.apply(classKey);
     }
 
     @RequiredArgsConstructor

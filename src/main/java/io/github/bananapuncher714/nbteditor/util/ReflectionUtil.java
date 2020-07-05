@@ -3,63 +3,12 @@ package io.github.bananapuncher714.nbteditor.util;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
 @UtilityClass
 public class ReflectionUtil {
-
-    static {
-        try {
-            // Caching Methods
-            ReflectionUtil.methodCache.put("getName", propertyClass.getMethod("getName"));
-            ReflectionUtil.methodCache.put("getValue", propertyClass.getMethod("getValue"));
-            ReflectionUtil.methodCache.put("values", propertyMapClass.getMethod("values"));
-            ReflectionUtil.methodCache.put("put", propertyMapClass.getMethod("put", Object.class, Object.class));
-            try {
-                ReflectionUtil.methodCache.put("getTileTag", tileEntityClass.getMethod("save", nbtTagCompoundClass));
-            } catch (final NoSuchMethodException exception) {
-                try {
-                    ReflectionUtil.methodCache.put("getTileTag", tileEntityClass.getMethod("b", nbtTagCompoundClass));
-                } catch (final NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
-            } catch (final SecurityException e) {
-                e.printStackTrace();
-            }
-            // Caching Constructors
-            ReflectionUtil.constructorCache.put(nbtTagByteClass, nbtTagByteClass.getDeclaredConstructor(byte.class));
-            ReflectionUtil.constructorCache.put(nbtTagByteClass, nbtTagByteClass.getDeclaredConstructor(byte.class));
-            ReflectionUtil.constructorCache.put(nbtTagStringClass, nbtTagStringClass.getDeclaredConstructor(String.class));
-            ReflectionUtil.constructorCache.put(nbtTagDoubleClass, nbtTagDoubleClass.getDeclaredConstructor(double.class));
-            ReflectionUtil.constructorCache.put(nbtTagIntClass, nbtTagIntClass.getDeclaredConstructor(int.class));
-            ReflectionUtil.constructorCache.put(nbtTagLongClass, nbtTagLongClass.getDeclaredConstructor(long.class));
-            ReflectionUtil.constructorCache.put(nbtTagFloatClass, nbtTagFloatClass.getDeclaredConstructor(float.class));
-            ReflectionUtil.constructorCache.put(nbtTagShortClass, nbtTagShortClass.getDeclaredConstructor(short.class));
-            ReflectionUtil.constructorCache.put(nbtTagByteArrayClass, nbtTagByteArrayClass.getDeclaredConstructor(byteArrayClass));
-            ReflectionUtil.constructorCache.put(nbtTagIntArrayClass, nbtTagIntArrayClass.getDeclaredConstructor(intArrayClass));
-            // This is for 1.15 since Mojang decided to make the constructors private
-            for (final Constructor<?> cons : ReflectionUtil.constructorCache.values()) {
-                cons.setAccessible(true);
-            }
-            ReflectionUtil.constructorCache.put(blockPositionClass,
-                Objects.requireNonNull(blockPositionClass).getConstructor(int.class, int.class, int.class));
-            ReflectionUtil.constructorCache.put(propertyClass,
-                Objects.requireNonNull(propertyClass).getConstructor(String.class, String.class));
-            for (final Class<?> clazz : ReflectionUtil.NBTClasses.values()) {
-                final Field data = clazz.getDeclaredField("data");
-                data.setAccessible(true);
-                ReflectionUtil.NBTTagFieldCache.put(clazz, data);
-            }
-            ReflectionUtil.NBTListData = listField;
-            ReflectionUtil.NBTCompoundMap = mapField;
-        } catch (final ClassNotFoundException | NoSuchMethodException | NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-    }
 
     @NotNull
     public Class<?> getNBTTag(@NotNull final Class<?> primitiveType) {
