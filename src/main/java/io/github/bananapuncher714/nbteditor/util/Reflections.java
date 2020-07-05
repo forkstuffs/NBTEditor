@@ -77,7 +77,7 @@ public class Reflections {
             } else {
                 nbtTagCompoundClassMethods.put("getKeys", nbtTagCompoundClass.getMethod("c"));
             }
-            final Map<String, Method> mojansonParserClassMethods = Collections.singletonMap("parse", mojansonParserClass.getMethod("parse", String.class)))
+            final Map<String, Method> mojansonParserClassMethods = Collections.singletonMap("parse", mojansonParserClass.getMethod("parse", String.class));
             final Map<String, Method> itemStackClassMethods = new HashMap<>();
             itemStackClassMethods.put("hasTag", itemStackClass.getMethod("hasTag"));
             itemStackClassMethods.put("getTag", itemStackClass.getMethod("getTag"));

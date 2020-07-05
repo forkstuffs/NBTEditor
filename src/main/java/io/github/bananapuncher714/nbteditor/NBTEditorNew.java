@@ -6,6 +6,7 @@ import io.github.bananapuncher714.nbteditor.tag.NBTCompound;
 import io.github.bananapuncher714.nbteditor.tag.abs.NBTBase;
 import io.github.bananapuncher714.nbteditor.tag.abs.NBTList;
 import io.github.bananapuncher714.nbteditor.util.MinecraftVersion;
+import io.github.bananapuncher714.nbteditor.util.Reflections;
 import java.lang.reflect.InvocationTargetException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,12 +32,12 @@ public final class NBTEditorNew {
      */
     @NotNull
     public static String getVersion() {
-        return ReflectionUtil.VERSION;
+        return Reflections.VERSION;
     }
 
     @NotNull
     public static MinecraftVersion getMinecraftVersion() {
-        return ReflectionUtil.LOCAL_VERSION;
+        return Reflections.LOCAL_VERSION;
     }
 
     @NotNull
