@@ -66,9 +66,6 @@ public class Reflections {
             final Class<?> nbtTagIntArrayClass = Reflections.findNMSClass("NBTTagIntArray");
             final Class<?> byteArrayClass = Reflections.findClass("[B");
             final Class<?> intArrayClass = Reflections.findClass("[I");
-            final List<Class<?>> nbtClasses = Arrays.asList(nbtTagByteClass, nbtTagStringClass, nbtTagDoubleClass,
-                nbtTagIntClass, nbtTagLongClass, nbtTagShortClass, nbtTagFloatClass, nbtTagByteArrayClass,
-                nbtTagByteArrayClass, nbtTagIntArrayClass, byteArrayClass, intArrayClass);
 
             // Caching Methods
             final Map<String, Method> nbtBaseClassMethods = Reflections.cacheMethods(nbtBaseClass, aClass ->
@@ -204,15 +201,23 @@ public class Reflections {
             final Constructor<?> nbtTagShortClassConstructor = nbtTagShortClass.getDeclaredConstructor(short.class);
             final Constructor<?> nbtTagByteArrayClassConstructor = nbtTagByteArrayClass.getDeclaredConstructor(byteArrayClass);
             final Constructor<?> nbtTagIntArrayClassConstructor = nbtTagIntArrayClass.getDeclaredConstructor(intArrayClass);
-            final List<Constructor<?>> nbtConstructors = Arrays.asList(nbtTagByteClassConstructor,
-                nbtTagStringClassConstructor, nbtTagDoubleClassConstructor, nbtTagIntClassConstructor,
-                nbtTagIntClassConstructor, nbtTagLongClassConstructor, nbtTagFloatClassConstructor,
-                nbtTagShortClassConstructor, nbtTagByteArrayClassConstructor, nbtTagIntArrayClassConstructor);
-            nbtConstructors.forEach(cons -> cons.setAccessible(true));
-            for (final Class<?> nbtClass : nbtClasses) {
-                final Field data = nbtClass.getDeclaredField("data");
+            final Map<Class<?>, Constructor<?>> nbtMap = new HashMap<>();
+            nbtMap.put(nbtTagByteClass, nbtTagByteClassConstructor);
+            nbtMap.put(nbtTagStringClass, nbtTagStringClassConstructor);
+            nbtMap.put(nbtTagDoubleClass, nbtTagDoubleClassConstructor);
+            nbtMap.put(nbtTagIntClass, nbtTagIntClassConstructor);
+            nbtMap.put(nbtTagLongClass, nbtTagLongClassConstructor);
+            nbtMap.put(nbtTagShortClass, nbtTagShortClassConstructor);
+            nbtMap.put(nbtTagFloatClass, nbtTagFloatClassConstructor);
+            nbtMap.put(nbtTagByteArrayClass, nbtTagByteArrayClassConstructor);
+            nbtMap.put(nbtTagByteArrayClass, nbtTagByteArrayClassConstructor);
+            nbtMap.put(nbtTagIntArrayClass, nbtTagIntArrayClassConstructor);
+            nbtMap.put(nbtTagByteArrayClass, nbtTagByteArrayClassConstructor);
+            for (final Map.Entry<Class<?>, Constructor<?>> entry : nbtMap.entrySet()) {
+                final Class<?> key = entry.getKey();
+                final Field data = key.getDeclaredField("data");
                 data.setAccessible(true);
-                map.put(nbtClass, data);
+                Reflections.addReference(key, entry.getValue(), new HashMap<>(), Collections.singletonMap(data));
             }
 
             // Caching Fields
@@ -225,6 +230,11 @@ public class Reflections {
             nbtTagListClassFields.forEach((s, field) -> field.setAccessible(true));
             nbtTagCompoundClassFields.forEach((s, field) -> field.setAccessible(true));
             craftMetaSkullClassMethods.forEach((s, method) -> method.setAccessible(true));
+            Arrays.asList(nbtTagByteClassConstructor,
+                nbtTagStringClassConstructor, nbtTagDoubleClassConstructor, nbtTagIntClassConstructor,
+                nbtTagIntClassConstructor, nbtTagLongClassConstructor, nbtTagFloatClassConstructor,
+                nbtTagShortClassConstructor, nbtTagByteArrayClassConstructor, nbtTagIntArrayClassConstructor)
+                .forEach(cons -> cons.setAccessible(true));
 
             Reflections.addReference(nbtBaseClass, nbtBaseClassMethods);
             Reflections.addReference(nbtTagCompoundClass, nbtTagCompoundClassMethods, nbtTagCompoundClassFields);
