@@ -7,13 +7,8 @@ import io.github.bananapuncher714.nbteditor.tag.abs.NBTBase;
 import io.github.bananapuncher714.nbteditor.tag.abs.NBTList;
 import io.github.bananapuncher714.nbteditor.util.MinecraftVersion;
 import io.github.bananapuncher714.nbteditor.util.Reflections;
-import java.lang.reflect.InvocationTargetException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import lombok.SneakyThrows;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public final class NBTEditorNew {
 
@@ -60,14 +55,11 @@ public final class NBTEditorNew {
     }
 
     @NotNull
-    @SneakyThrows
-    public static NBTCompound fromJson(@NotNull final String json) {
-        return new NBTCompound(
-            Reflections.findMethod("MojangsonParser", "loadNBTTagCompound").invoke(null, json));
-    }
-
-    @NotNull
     public static NBTBase convertTag(@NotNull final Object object) {
+        if (object instanceof String) {
+            return new NBTCompound(
+                Reflections.findMethod("MojangsonParser", "loadNBTTagCompound").invoke(null, object));
+        }
 //        if (object instanceof NBTBase) {
 //            return (NBTBase) object;
 //        }
