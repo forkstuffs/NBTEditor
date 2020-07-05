@@ -125,7 +125,7 @@ public class Reflections {
             });
             final Map<String, Method> craftEntityClassMethods = Reflections.cacheMethods(craftEntityClass, aClass ->
                 Collections.singletonMap("getHandle", aClass.getMethod("getHandle")));
-            Reflections.cacheMethods(tileEntityClass, aClass -> {
+            final Map<String, Method> tileEntityClassMethods = Reflections.cacheMethods(tileEntityClass, aClass -> {
                 final Map<String, Method> methods = new HashMap<>();
                 if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
                     methods.put("load", aClass.getMethod("load", iBlockDataClass, nbtTagCompoundClass));
@@ -147,7 +147,7 @@ public class Reflections {
                 }
                 return methods;
             });
-            Reflections.cacheMethods(worldClass, aClass -> {
+            final Map<String, Method> worldClassMethods = Reflections.cacheMethods(worldClass, aClass -> {
                 final Map<String, Method> methods = new HashMap<>();
                 if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
                     methods.put("getType", aClass.getMethod("getType", blockPositionClass));
@@ -155,8 +155,13 @@ public class Reflections {
                 methods.put("getTileEntity", aClass.getMethod("getTileEntity", blockPositionClass));
                 return methods;
             });
-            Reflections.cacheMethods(worldClass, aClass ->
-                Collections.singletonMap("getWorldHandle", craftWorldClass.getMethod("getHandle")));
+            final Map<String, Method> craftWorldClassMethods = Reflections.cacheMethods(craftWorldClass, aClass ->
+                Collections.singletonMap("getWorldHandle", aClass.getMethod("getHandle")));
+            final Map<String, Method> tileEntitySkullClassMethods = Reflections.cacheMethods(tileEntitySkullClass, aClass ->
+                Collections.singletonMap("setGameProfile", aClass.getMethod("setGameProfile", gameProfileClass)));
+            final Map<String, Method> gameProfileClassMethods = Reflections.cacheMethods(gameProfileClass, aClass ->
+                Collections.singletonMap("getProperties", aClass.getMethod("getProperties")));
+
             /*
             Reflections.cacheMethods(worldClass, aClass -> {
                 final Map<String, Method> methods = new HashMap<>();
@@ -164,8 +169,7 @@ public class Reflections {
                 return methods;
             });
             */
-            Reflections.cacheMethods(worldClass, aClass ->
-                Collections.singletonMap("setGameProfile", tileEntitySkullClass.getMethod("setGameProfile", gameProfileClass)));
+
             // Caching Fields
             final Map<String, Field> nbtTagCompoundClassFields = Reflections.cacheFields(nbtTagCompoundClass, aClass ->
                 Collections.singletonList(aClass.getDeclaredField("map")));
@@ -180,6 +184,7 @@ public class Reflections {
             } else {
                 itemStackClassConstructor = null;
             }
+            final Constructor<?> gameProfileClassConstructor = gameProfileClass.getConstructor(UUID.class, String.class);
 
             // Caching References
             nbtTagListClassFields.forEach((s, field) -> field.setAccessible(true));
@@ -194,6 +199,11 @@ public class Reflections {
             Reflections.addReference(craftItemStackClass, null, craftItemStackClassMethods, new HashMap<>());
             Reflections.addReference(entityClass, null, entityClassMethods, new HashMap<>());
             Reflections.addReference(craftEntityClass, null, craftEntityClassMethods, new HashMap<>());
+            Reflections.addReference(tileEntityClass, null, tileEntityClassMethods, new HashMap<>());
+            Reflections.addReference(worldClass, null, worldClassMethods, new HashMap<>());
+            Reflections.addReference(craftWorldClass, null, craftWorldClassMethods, new HashMap<>());
+            Reflections.addReference(tileEntitySkullClass, null, tileEntitySkullClassMethods, new HashMap<>());
+            Reflections.addReference(gameProfileClass, gameProfileClassConstructor, gameProfileClassMethods, new HashMap<>());
         } catch (final Exception e) {
             e.printStackTrace();
         }

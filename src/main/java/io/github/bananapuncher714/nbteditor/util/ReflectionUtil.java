@@ -15,7 +15,6 @@ public class ReflectionUtil {
     static {
         try {
             // Caching Methods
-            ReflectionUtil.methodCache.put("getProperties", gameProfileClass.getMethod("getProperties"));
             ReflectionUtil.methodCache.put("getName", propertyClass.getMethod("getName"));
             ReflectionUtil.methodCache.put("getValue", propertyClass.getMethod("getValue"));
             ReflectionUtil.methodCache.put("values", propertyMapClass.getMethod("values"));
@@ -48,8 +47,6 @@ public class ReflectionUtil {
             }
             ReflectionUtil.constructorCache.put(blockPositionClass,
                 Objects.requireNonNull(blockPositionClass).getConstructor(int.class, int.class, int.class));
-            ReflectionUtil.constructorCache.put(gameProfileClass,
-                Objects.requireNonNull(gameProfileClass).getConstructor(UUID.class, String.class));
             ReflectionUtil.constructorCache.put(propertyClass,
                 Objects.requireNonNull(propertyClass).getConstructor(String.class, String.class));
             for (final Class<?> clazz : ReflectionUtil.NBTClasses.values()) {
