@@ -43,7 +43,7 @@ public class Reflections {
             final Class<?> craftEntityClass = Reflections.findCBClass("entity.CraftEntity");
             final Class<?> entityLivingClass = Reflections.findNMSClass("EntityLiving");
             final Class<?> craftWorldClass = Reflections.findCBClass("CraftWorld");
-            final Class<?> craftBlockState = Reflections.findCBClass("block." + "CraftBlockState");
+            final Class<?> craftBlockStateClass = Reflections.findCBClass("block." + "CraftBlockState");
             final Class<?> blockPositionClass = Reflections.findNMSClass("BlockPosition");
             final Class<?> tileEntityClass = Reflections.findNMSClass("TileEntity");
             final Class<?> worldClass = Reflections.findNMSClass("World");
@@ -210,6 +210,7 @@ public class Reflections {
             Reflections.addReference(propertyClass, propertyClassConstructor, propertyClassMethods);
             Reflections.addReference(propertyMapClass, propertyMapClassMethods);
             Reflections.addReference(blockPositionClass, blockPositionClassConstructor, new HashMap<>());
+            Reflections.addReference(craftBlockStateClass);
         } catch (final Exception e) {
             e.printStackTrace();
         }
@@ -258,8 +259,12 @@ public class Reflections {
         return Class.forName(classPath);
     }
 
+    private void addReference(@NotNull final Class<?> aClass) {
+        Reflections.addReference(aClass.getSimpleName(), aClass, null, new HashMap<>(), new HashMap<>());
+    }
+
     private void addReference(@NotNull final Class<?> aClass, @Nullable final Constructor<?> constructors) {
-        Reflections.addReference(aClass.getSimpleName(), aClass, constructors, null, null);
+        Reflections.addReference(aClass.getSimpleName(), aClass, constructors, new HashMap<>(), new HashMap<>());
     }
 
     private void addReference(@NotNull final Class<?> aClass, @NotNull final Map<String, Method> methods) {
