@@ -67,21 +67,17 @@ public class Reflections {
             final Class<?> intArrayClass = Reflections.findClass("[I");
 
             // Caching Methods
-            final Map<String, Method> nbtBaseClassMethods = Reflections.cacheMethods(nbtBaseClass, aClass ->
-                Collections.singletonMap("getTypeId", nbtBaseClass.getMethod("getTypeId")));
-            final Map<String, Method> nbtTagCompoundClassMethods = Reflections.cacheMethods(nbtTagCompoundClass, aClass -> {
-                final Map<String, Method> methods = new HashMap<>();
-                methods.put("get", aClass.getMethod("get", String.class));
-                methods.put("set", aClass.getMethod("set", String.class, nbtBaseClass));
-                methods.put("hasKey", aClass.getMethod("hasKey", String.class));
-                methods.put("remove", aClass.getMethod("remove", String.class));
-                if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_13)) {
-                    methods.put("getKeys", aClass.getMethod("getKeys"));
-                } else {
-                    methods.put("getKeys", aClass.getMethod("c"));
-                }
-                return methods;
-            });
+            final Map<String, Method> nbtBaseClassMethods = Collections.singletonMap("getTypeId", nbtBaseClass.getMethod("getTypeId"));
+            final Map<String, Method> nbtTagCompoundClassMethods = new HashMap<>();
+            nbtTagCompoundClassMethods.put("get", nbtTagCompoundClass.getMethod("get", String.class));
+            nbtTagCompoundClassMethods.put("set", nbtTagCompoundClass.getMethod("set", String.class, nbtBaseClass));
+            nbtTagCompoundClassMethods.put("hasKey", nbtTagCompoundClass.getMethod("hasKey", String.class));
+            nbtTagCompoundClassMethods.put("remove", nbtTagCompoundClass.getMethod("remove", String.class));
+            if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_13)) {
+                nbtTagCompoundClassMethods.put("getKeys", nbtTagCompoundClass.getMethod("getKeys"));
+            } else {
+                nbtTagCompoundClassMethods.put("getKeys", nbtTagCompoundClass.getMethod("c"));
+            }
             final Map<String, Method> mojansonParserClassMethods = Collections.singletonMap("parse", mojansonParserClass.getMethod("parse", String.class)))
             final Map<String, Method> itemStackClassMethods = new HashMap<>();
             itemStackClassMethods.put("hasTag", itemStackClass.getMethod("hasTag"));
