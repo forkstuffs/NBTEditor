@@ -15,8 +15,6 @@ public class ReflectionUtil {
     static {
         try {
             // Caching Methods
-            ReflectionUtil.methodCache.put("getWorldHandle", craftWorldClass.getMethod("getHandle"));
-            ReflectionUtil.methodCache.put("setGameProfile", tileEntitySkullClass.getMethod("setGameProfile", gameProfileClass));
             ReflectionUtil.methodCache.put("getProperties", gameProfileClass.getMethod("getProperties"));
             ReflectionUtil.methodCache.put("getName", propertyClass.getMethod("getName"));
             ReflectionUtil.methodCache.put("getValue", propertyClass.getMethod("getValue"));

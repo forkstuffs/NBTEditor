@@ -155,7 +155,17 @@ public class Reflections {
                 methods.put("getTileEntity", aClass.getMethod("getTileEntity", blockPositionClass));
                 return methods;
             });
+            Reflections.cacheMethods(worldClass, aClass ->
+                Collections.singletonMap("getWorldHandle", craftWorldClass.getMethod("getHandle")));
+            /*
+            Reflections.cacheMethods(worldClass, aClass -> {
+                final Map<String, Method> methods = new HashMap<>();
 
+                return methods;
+            });
+            */
+            Reflections.cacheMethods(worldClass, aClass ->
+                Collections.singletonMap("setGameProfile", tileEntitySkullClass.getMethod("setGameProfile", gameProfileClass)));
             // Caching Fields
             final Map<String, Field> nbtTagCompoundClassFields = Reflections.cacheFields(nbtTagCompoundClass, aClass ->
                 Collections.singletonList(aClass.getDeclaredField("map")));
