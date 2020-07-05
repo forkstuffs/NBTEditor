@@ -7,6 +7,7 @@ import io.github.bananapuncher714.nbteditor.tag.abs.NBTBase;
 import io.github.bananapuncher714.nbteditor.tag.abs.NBTList;
 import io.github.bananapuncher714.nbteditor.util.MinecraftVersion;
 import io.github.bananapuncher714.nbteditor.util.Reflections;
+import lombok.SneakyThrows;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,9 +44,10 @@ public final class NBTEditorNew {
         throw new IllegalArgumentException("Object provided must be of type ItemStack, Entity, Block, or NBTCompound!");
     }
 
+    @SneakyThrows
     @NotNull
     public static NBTCompound emptyCompound() {
-        return NBTEditorNew.fromJson("{}");
+        return (NBTCompound) NBTEditorNew.convertTag("{}");
     }
 
     @NotNull
@@ -54,6 +56,7 @@ public final class NBTEditorNew {
         throw new RuntimeException("Somethings wrong!");
     }
 
+    @SneakyThrows
     @NotNull
     public static NBTBase convertTag(@NotNull final Object object) {
         if (object instanceof String) {
