@@ -145,40 +145,20 @@ public class Reflections {
                 }
                 return methods;
             });
-            final Map<String, Method> worldClassMethods = Reflections.cacheMethods(worldClass, aClass -> {
-                final Map<String, Method> methods = new HashMap<>();
-                if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
-                    methods.put("getType", aClass.getMethod("getType", blockPositionClass));
-                }
-                methods.put("getTileEntity", aClass.getMethod("getTileEntity", blockPositionClass));
-                return methods;
-            });
-            final Map<String, Method> craftWorldClassMethods = Reflections.cacheMethods(craftWorldClass, aClass ->
-                Collections.singletonMap("getWorldHandle", aClass.getMethod("getHandle")));
-            final Map<String, Method> tileEntitySkullClassMethods = Reflections.cacheMethods(tileEntitySkullClass, aClass ->
-                Collections.singletonMap("setGameProfile", aClass.getMethod("setGameProfile", gameProfileClass)));
-            final Map<String, Method> gameProfileClassMethods = Reflections.cacheMethods(gameProfileClass, aClass ->
-                Collections.singletonMap("getProperties", aClass.getMethod("getProperties")));
-            final Map<String, Method> propertyClassMethods = Reflections.cacheMethods(propertyClass, aClass -> {
-                final Map<String, Method> methods = new HashMap<>();
-                methods.put("getName", aClass.getMethod("getName"));
-                methods.put("getValue", aClass.getMethod("getValue"));
-                return methods;
-            });
-            final Map<String, Method> propertyMapClassMethods = Reflections.cacheMethods(propertyMapClass, aClass -> {
-                final Map<String, Method> methods = new HashMap<>();
-                methods.put("values", propertyMapClass.getMethod("values"));
-                methods.put("put", propertyMapClass.getMethod("put", Object.class, Object.class));
-                return methods;
-            });
-
-            /*
-            Reflections.cacheMethods(, aClass -> {
-                final Map<String, Method> methods = new HashMap<>();
-
-                return methods;
-            });
-            */
+            final Map<String, Method> worldClassMethods = new HashMap<>();
+            if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
+                worldClassMethods.put("getType", worldClass.getMethod("getType", blockPositionClass));
+            }
+            worldClassMethods.put("getTileEntity", worldClass.getMethod("getTileEntity", blockPositionClass));
+            final Map<String, Method> craftWorldClassMethods = Collections.singletonMap("getWorldHandle", craftWorldClass.getMethod("getHandle"));
+            final Map<String, Method> tileEntitySkullClassMethods = Collections.singletonMap("setGameProfile", tileEntitySkullClass.getMethod("setGameProfile", gameProfileClass));
+            final Map<String, Method> gameProfileClassMethods = Collections.singletonMap("getProperties", gameProfileClass.getMethod("getProperties"));
+            final Map<String, Method> propertyClassMethods = new HashMap<>();
+            propertyClassMethods.put("getName", propertyClass.getMethod("getName"));
+            propertyClassMethods.put("getValue", propertyClass.getMethod("getValue"));
+            final Map<String, Method> propertyMapClassMethods = new HashMap<>();
+            propertyMapClassMethods.put("values", propertyMapClass.getMethod("values"));
+            propertyMapClassMethods.put("put", propertyMapClass.getMethod("put", Object.class, Object.class));
 
             // Caching Constructors
             @Nullable final Constructor<?> itemStackClassConstructor;
@@ -220,10 +200,8 @@ public class Reflections {
             }
 
             // Caching Fields
-            final Map<String, Field> nbtTagCompoundClassFields = Reflections.cacheFields(nbtTagCompoundClass, aClass ->
-                Collections.singletonMap("map", aClass.getDeclaredField("map")));
-            final Map<String, Field> nbtTagListClassFields = Reflections.cacheFields(nbtTagListClass, aClass ->
-                Collections.singletonMap("list", aClass.getDeclaredField("list")));
+            final Map<String, Field> nbtTagCompoundClassFields = Collections.singletonMap("map", nbtTagCompoundClass.getDeclaredField("map"));
+            final Map<String, Field> nbtTagListClassFields = Collections.singletonMap("list", nbtTagListClass.getDeclaredField("list"));
 
             // Caching References
             nbtTagListClassFields.forEach((s, field) -> field.setAccessible(true));
@@ -328,19 +306,6 @@ public class Reflections {
                               @Nullable final Constructor<?> constructors, @NotNull final Map<String, Method> methods,
                               @NotNull final Map<String, Field> fields) {
         Reflections.REF.put(key, new Reference(key, aClass, constructors, methods, fields));
-    }
-
-    @NotNull
-    private Map<String, Method> cacheMethods(@NotNull final Class<?> classKey,
-                                             @NotNull final ThrowableFunction<Class<?>, Map<String, Method>> func)
-        throws Exception {
-        return func.apply(classKey);
-    }
-
-    @NotNull
-    private Map<String, Field> cacheFields(@NotNull final Class<?> classKey,
-                                           @NotNull final ThrowableFunction<Class<?>, Map<String, Field>> func) throws Exception {
-        return func.apply(classKey);
     }
 
 }
