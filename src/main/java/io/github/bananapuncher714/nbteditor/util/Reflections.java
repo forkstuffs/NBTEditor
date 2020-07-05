@@ -82,69 +82,54 @@ public class Reflections {
                 }
                 return methods;
             });
-            final Map<String, Method> mojansonParserClassMethods = Reflections.cacheMethods(mojansonParserClass, aClass ->
-                Collections.singletonMap("parse", aClass.getMethod("parse", String.class)));
-            final Map<String, Method> itemStackClassMethods = Reflections.cacheMethods(itemStackClass, aClass -> {
-                final Map<String, Method> methods = new HashMap<>();
-                methods.put("hasTag", aClass.getMethod("hasTag"));
-                methods.put("getTag", aClass.getMethod("getTag"));
-                methods.put("setTag", aClass.getMethod("setTag", nbtTagCompoundClass));
-                methods.put("save", aClass.getMethod("save", nbtTagCompoundClass));
-                if (Reflections.LOCAL_VERSION.lessThanOrEqualTo(MinecraftVersion.v1_10)) {
-                    methods.put("createStack", aClass.getMethod("createStack", nbtTagCompoundClass));
-                } else if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_13)) {
-                    methods.put("createStack", aClass.getMethod("a", nbtTagCompoundClass));
-                }
-                return methods;
-            });
-            final Map<String, Method> craftItemStackClassMethods = Reflections.cacheMethods(craftItemStackClass, aClass -> {
-                final Map<String, Method> methods = new HashMap<>();
-                methods.put("asNMSCopy", aClass.getMethod("asNMSCopy", ItemStack.class));
-                methods.put("asBukkitCopy", aClass.getMethod("asBukkitCopy", itemStackClass));
-                return methods;
-            });
+            final Map<String, Method> mojansonParserClassMethods = Collections.singletonMap("parse", mojansonParserClass.getMethod("parse", String.class)))
+            final Map<String, Method> itemStackClassMethods = new HashMap<>();
+            itemStackClassMethods.put("hasTag", itemStackClass.getMethod("hasTag"));
+            itemStackClassMethods.put("getTag", itemStackClass.getMethod("getTag"));
+            itemStackClassMethods.put("setTag", itemStackClass.getMethod("setTag", nbtTagCompoundClass));
+            itemStackClassMethods.put("save", itemStackClass.getMethod("save", nbtTagCompoundClass));
+            if (Reflections.LOCAL_VERSION.lessThanOrEqualTo(MinecraftVersion.v1_10)) {
+                itemStackClassMethods.put("createStack", itemStackClass.getMethod("createStack", nbtTagCompoundClass));
+            } else if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_13)) {
+                itemStackClassMethods.put("createStack", itemStackClass.getMethod("a", nbtTagCompoundClass));
+            }
+            final Map<String, Method> craftItemStackClassMethods = new HashMap<>();
+            craftItemStackClassMethods.put("asNMSCopy", craftItemStackClass.getMethod("asNMSCopy", ItemStack.class));
+            craftItemStackClassMethods.put("asBukkitCopy", craftItemStackClass.getMethod("asBukkitCopy", itemStackClass));
             final Map<String, Method> craftMetaSkullClassMethods = new HashMap<>();
             try {
-                craftMetaSkullClassMethods.putAll(Reflections.cacheMethods(craftMetaSkullClass, aClass ->
-                    Collections.singletonMap("setProfile", craftMetaSkullClass.getDeclaredMethod("setProfile", gameProfileClass))));
+                craftMetaSkullClassMethods.putAll(Collections.singletonMap("setProfile", craftMetaSkullClass.getDeclaredMethod("setProfile", gameProfileClass)));
             } catch (final NoSuchMethodException ignored) {
                 // The method doesn't exist, so it's before 1.15.2
             }
-            final Map<String, Method> entityClassMethods = Reflections.cacheMethods(entityClass, aClass -> {
-                final Map<String, Method> methods = new HashMap<>();
-                if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
-                    methods.put("save", aClass.getMethod("save", nbtTagCompoundClass));
-                    methods.put("load", aClass.getMethod("load", nbtTagCompoundClass));
-                } else {
-                    methods.put("save", aClass.getMethod("c", nbtTagCompoundClass));
-                    methods.put("load", aClass.getMethod("f", nbtTagCompoundClass));
-                }
-                return methods;
-            });
-            final Map<String, Method> craftEntityClassMethods = Reflections.cacheMethods(craftEntityClass, aClass ->
-                Collections.singletonMap("getHandle", aClass.getMethod("getHandle")));
-            final Map<String, Method> tileEntityClassMethods = Reflections.cacheMethods(tileEntityClass, aClass -> {
-                final Map<String, Method> methods = new HashMap<>();
-                if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
-                    methods.put("load", aClass.getMethod("load", iBlockDataClass, nbtTagCompoundClass));
-                } else if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_12)) {
-                    methods.put("load", aClass.getMethod("load", nbtTagCompoundClass));
-                } else {
-                    methods.put("load", aClass.getMethod("a", nbtTagCompoundClass));
-                }
+            final Map<String, Method> entityClassMethods = new HashMap<>();
+            if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
+                entityClassMethods.put("save", entityClass.getMethod("save", nbtTagCompoundClass));
+                entityClassMethods.put("load", entityClass.getMethod("load", nbtTagCompoundClass));
+            } else {
+                entityClassMethods.put("save", entityClass.getMethod("c", nbtTagCompoundClass));
+                entityClassMethods.put("load", entityClass.getMethod("f", nbtTagCompoundClass));
+            }
+            final Map<String, Method> craftEntityClassMethods = Collections.singletonMap("getHandle", craftEntityClass.getMethod("getHandle"));
+            final Map<String, Method> tileEntityClassMethods = new HashMap<>();
+            if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
+                tileEntityClassMethods.put("load", tileEntityClass.getMethod("load", iBlockDataClass, nbtTagCompoundClass));
+            } else if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_12)) {
+                tileEntityClassMethods.put("load", tileEntityClass.getMethod("load", nbtTagCompoundClass));
+            } else {
+                tileEntityClassMethods.put("load", tileEntityClass.getMethod("a", nbtTagCompoundClass));
+            }
+            try {
+                tileEntityClassMethods.put("save", tileEntityClass.getMethod("save", nbtTagCompoundClass));
+            } catch (final NoSuchMethodException exception) {
                 try {
-                    methods.put("save", aClass.getMethod("save", nbtTagCompoundClass));
-                } catch (final NoSuchMethodException exception) {
-                    try {
-                        methods.put("save", aClass.getMethod("b", nbtTagCompoundClass));
-                    } catch (final NoSuchMethodException e) {
-                        e.printStackTrace();
-                    }
-                } catch (final SecurityException e) {
+                    tileEntityClassMethods.put("save", tileEntityClass.getMethod("b", nbtTagCompoundClass));
+                } catch (final NoSuchMethodException e) {
                     e.printStackTrace();
                 }
-                return methods;
-            });
+            } catch (final SecurityException e) {
+                e.printStackTrace();
+            }
             final Map<String, Method> worldClassMethods = new HashMap<>();
             if (Reflections.LOCAL_VERSION.greaterThanOrEqualTo(MinecraftVersion.v1_16)) {
                 worldClassMethods.put("getType", worldClass.getMethod("getType", blockPositionClass));
