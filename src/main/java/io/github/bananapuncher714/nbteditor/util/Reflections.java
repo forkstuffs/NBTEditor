@@ -257,23 +257,6 @@ public class Reflections {
     }
 
     @NotNull
-    public Class<?> getNBTTag(@NotNull final Class<?> primitiveType) {
-        return NBTClasses.getOrDefault(primitiveType, primitiveType);
-    }
-
-    @NotNull
-    public Object getNBTVar(@NotNull final Object object) {
-        final Class<?> clazz = object.getClass();
-        if (NBTTagFieldCache.containsKey(clazz)) {
-            try {
-                return NBTTagFieldCache.get(clazz).get(object);
-            } catch (final IllegalAccessException ignored) {
-            }
-        }
-        throw new RuntimeException("The NBT of " + object.getClass().getSimpleName() + " not found!");
-    }
-
-    @NotNull
     public Optional<Constructor<?>> findConstructor(@NotNull final String key) {
         return Reflections.findReference(key)
             .flatMap(Reference::getConstructor);
@@ -294,6 +277,11 @@ public class Reflections {
     @NotNull
     public Optional<Reference> findReference(@NotNull final String key) {
         return Optional.ofNullable(Reflections.REF.get(key));
+    }
+    
+    @NotNull
+    private Class<?> findNMSClass(@NotNull final String classPath) throws ClassNotFoundException {
+        return Reflections.findClass(Reflections.nmspath + classPath);
     }
 
     @NotNull
