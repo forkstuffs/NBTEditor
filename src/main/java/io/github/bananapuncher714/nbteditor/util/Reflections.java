@@ -217,7 +217,7 @@ public class Reflections {
                 final Class<?> key = entry.getKey();
                 final Field data = key.getDeclaredField("data");
                 data.setAccessible(true);
-                Reflections.addReference(key, entry.getValue(), new HashMap<>(), Collections.singletonMap(data));
+                Reflections.addReference(key, entry.getValue(), new HashMap<>(), Collections.singletonMap("data", data));
             }
 
             // Caching Fields
