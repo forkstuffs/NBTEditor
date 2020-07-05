@@ -217,9 +217,9 @@ public class Reflections {
 
             // Caching Fields
             final Map<String, Field> nbtTagCompoundClassFields = Reflections.cacheFields(nbtTagCompoundClass, aClass ->
-                Collections.singletonList(aClass.getDeclaredField("map")));
+                Collections.singletonMap("map", aClass.getDeclaredField("map")));
             final Map<String, Field> nbtTagListClassFields = Reflections.cacheFields(nbtTagListClass, aClass ->
-                Collections.singletonList(aClass.getDeclaredField("list")));
+                Collections.singletonMap("list", aClass.getDeclaredField("list")));
 
             // Caching References
             nbtTagListClassFields.forEach((s, field) -> field.setAccessible(true));
