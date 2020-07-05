@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +25,7 @@ public class Reflections {
 
     private final String authpath = "com.mojang.authlib.";
 
-    private final Map<String, Reflections.Reference> REF = new HashMap<>();
+    private final Map<String, Reference> REF = new HashMap<>();
 
     static {
         VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
@@ -285,7 +284,7 @@ public class Reflections {
     private void addReference(@NotNull final String key, @NotNull final Class<?> aClass,
                               @Nullable final Constructor<?> constructors, @NotNull final Map<String, Method> methods,
                               @NotNull final Map<String, Field> fields) {
-        Reflections.REF.put(key, new Reflections.Reference(key, aClass, constructors, methods, fields));
+        Reflections.REF.put(key, new Reference(key, aClass, constructors, methods, fields));
     }
 
     @NotNull
@@ -319,26 +318,6 @@ public class Reflections {
     private Map<String, Field> cacheFields(@NotNull final Class<?> classKey,
                                            @NotNull final ThrowableFunction<Class<?>, Map<String, Field>> func) throws Exception {
         return func.apply(classKey);
-    }
-
-    @RequiredArgsConstructor
-    public final class Reference {
-
-        @NotNull
-        private final String key;
-
-        @NotNull
-        private final Class<?> aClass;
-
-        @Nullable
-        private final Constructor<?> constructors;
-
-        @NotNull
-        private final Map<String, Method> methods;
-
-        @NotNull
-        private final Map<String, Field> fields;
-
     }
 
 }
