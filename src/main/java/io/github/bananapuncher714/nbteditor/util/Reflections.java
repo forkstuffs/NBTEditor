@@ -256,6 +256,61 @@ public class Reflections {
         }
     }
 
+    @NotNull
+    public Class<?> getNBTTag(@NotNull final Class<?> primitiveType) {
+        return NBTClasses.getOrDefault(primitiveType, primitiveType);
+    }
+
+    @NotNull
+    public Object getNBTVar(@NotNull final Object object) {
+        final Class<?> clazz = object.getClass();
+        if (NBTTagFieldCache.containsKey(clazz)) {
+            try {
+                return NBTTagFieldCache.get(clazz).get(object);
+            } catch (final IllegalAccessException ignored) {
+            }
+        }
+        throw new RuntimeException("The NBT of " + object.getClass().getSimpleName() + " not found!");
+    }
+
+    @NotNull
+    public Optional<Constructor<?>> findConstructor(@NotNull final String key) {
+        return Reflections.findReference(key)
+            .flatMap(Reference::getConstructor);
+    }
+
+    @NotNull
+    public Optional<Method> findMethod(@NotNull final String key, @NotNull final String name) {
+        return Reflections.findReference(key)
+            .flatMap(reference -> reference.getMethod(name));
+    }
+
+    @NotNull
+    public Optional<Field> findField(@NotNull final String key, @NotNull final String name) {
+        return Reflections.findReference(key)
+            .flatMap(reference -> reference.getField(name));
+    }
+
+    @NotNull
+    public Optional<Reference> findReference(@NotNull final String key) {
+        return Optional.ofNullable(Reflections.REF.get(key));
+    }
+
+    @NotNull
+    private Class<?> findCBClass(@NotNull final String classPath) throws ClassNotFoundException {
+        return Reflections.findClass(Reflections.cbpath + classPath);
+    }
+
+    @NotNull
+    private Class<?> findAuthClass(@NotNull final String classPath) throws ClassNotFoundException {
+        return Reflections.findClass(Reflections.authpath + classPath);
+    }
+
+    @NotNull
+    private Class<?> findClass(@NotNull final String classPath) throws ClassNotFoundException {
+        return Class.forName(classPath);
+    }
+
     private void addReference(@NotNull final Class<?> aClass, @Nullable final Constructor<?> constructors) {
         Reflections.addReference(aClass.getSimpleName(), aClass, constructors, null, null);
     }
@@ -285,26 +340,6 @@ public class Reflections {
                               @Nullable final Constructor<?> constructors, @NotNull final Map<String, Method> methods,
                               @NotNull final Map<String, Field> fields) {
         Reflections.REF.put(key, new Reference(key, aClass, constructors, methods, fields));
-    }
-
-    @NotNull
-    private Class<?> findNMSClass(@NotNull final String classPath) throws ClassNotFoundException {
-        return Reflections.findClass(Reflections.nmspath + classPath);
-    }
-
-    @NotNull
-    private Class<?> findCBClass(@NotNull final String classPath) throws ClassNotFoundException {
-        return Reflections.findClass(Reflections.cbpath + classPath);
-    }
-
-    @NotNull
-    private Class<?> findAuthClass(@NotNull final String classPath) throws ClassNotFoundException {
-        return Reflections.findClass(Reflections.authpath + classPath);
-    }
-
-    @NotNull
-    private Class<?> findClass(@NotNull final String classPath) throws ClassNotFoundException {
-        return Class.forName(classPath);
     }
 
     @NotNull
