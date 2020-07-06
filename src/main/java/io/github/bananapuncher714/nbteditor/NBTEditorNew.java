@@ -2,7 +2,6 @@ package io.github.bananapuncher714.nbteditor;
 
 import io.github.bananapuncher714.nbteditor.builder.CompoundBuilder;
 import io.github.bananapuncher714.nbteditor.builder.ItemStackBuilder;
-import io.github.bananapuncher714.nbteditor.tag.NBTCompound;
 import io.github.bananapuncher714.nbteditor.tag.abs.NBTBase;
 import io.github.bananapuncher714.nbteditor.tag.abs.NBTList;
 import io.github.bananapuncher714.nbteditor.util.MinecraftVersion;

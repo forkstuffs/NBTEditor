@@ -2,28 +2,18 @@ package io.github.bananapuncher714.nbteditor.tag.abs;
 
 public interface NBTNumber extends NBTBase {
 
-    default long longValue() {
-        return 0L;
-    }
+    long asLong();
 
-    default int intValue() {
-        return 0;
-    }
+    int asInt();
 
-    default short shortValue() {
-        return (short) 0;
-    }
+    short asShort();
 
-    default byte byteValue() {
-        return (byte) 0;
-    }
+    byte asByte();
 
-    default double doubleValue() {
-        return 0.0d;
-    }
+    double asDouble();
 
-    default float floatValue() {
-        return 0.0f;
-    }
+    float asFloat();
+
+    Number asNumber();
 
 }

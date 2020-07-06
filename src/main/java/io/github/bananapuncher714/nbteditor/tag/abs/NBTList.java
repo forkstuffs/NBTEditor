@@ -1,41 +1,23 @@
 package io.github.bananapuncher714.nbteditor.tag.abs;
 
-import io.github.bananapuncher714.nbteditor.tag.NBTCompound;
+import java.util.AbstractList;
 import org.jetbrains.annotations.NotNull;
 
-public interface NBTList extends NBTBase {
+public abstract class NBTList<T extends NBTBase> extends AbstractList<T> implements NBTBase {
 
-    void add(@NotNull Object value);
-
-    void add(int key, @NotNull Object value);
-
-    void set(int key, @NotNull Object value);
-
-    void remove(int key);
-
+    @Override
     @NotNull
-    NBTBase get(int key);
+    public abstract T get(int key);
 
-    @NotNull
-    NBTCompound getCompound(int key);
+    @Override
+    public abstract T set(int key, @NotNull T value);
 
-    @NotNull
-    NBTList getList(int key);
+    @Override
+    public abstract void add(int key, @NotNull T value);
 
-    short getShort(int key);
+    @Override
+    public abstract T remove(int key);
 
-    int getInt(int key);
-
-    @NotNull
-    int[] getIntArray(int key);
-
-    double getDouble(int key);
-
-    float getFloat(int key);
-
-    @NotNull
-    String getString(int key);
-
-    int size();
+    public abstract void add(int index);
 
 }

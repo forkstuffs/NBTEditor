@@ -1,6 +1,5 @@
 package io.github.bananapuncher714.nbteditor.tag.abs;
 
-import io.github.bananapuncher714.nbteditor.tag.NBTType;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class NBTBaseEnvelope implements NBTBase {

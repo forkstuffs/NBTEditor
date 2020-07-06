@@ -32,9 +32,6 @@ public class Reflections {
         LOCAL_VERSION = Objects.requireNonNull(MinecraftVersion.get(Reflections.VERSION));
         try {
             // Caching NMS|CB|MOJANG Classes
-            final Class<?> nbtBaseClass = Reflections.findNMSClass("NBTBase");
-            final Class<?> nbtTagCompoundClass = Reflections.findNMSClass("NBTTagCompound");
-            final Class<?> nbtTagListClass = Reflections.findNMSClass("NBTTagList");
             final Class<?> mojansonParserClass = Reflections.findNMSClass("MojangsonParser");
             final Class<?> itemStackClass = Reflections.findNMSClass("ItemStack");
             final Class<?> craftItemStackClass = Reflections.findCBClass("inventory.CraftItemStack");
@@ -53,6 +50,10 @@ public class Reflections {
             final Class<?> propertyMapClass = Reflections.findAuthClass("properties.PropertyMap");
 
             // Caching NBT Classes
+            final Class<?> nbtBaseClass = Reflections.findNMSClass("NBTBase");
+            final Class<?> nbtNumber = Reflections.findNMSClass("NBTNumber");
+            final Class<?> nbtTagCompoundClass = Reflections.findNMSClass("NBTTagCompound");
+            final Class<?> nbtTagListClass = Reflections.findNMSClass("NBTTagList");
             final Class<?> nbtTagByteClass = Reflections.findNMSClass("NBTTagByte");
             final Class<?> nbtTagStringClass = Reflections.findNMSClass("NBTTagString");
             final Class<?> nbtTagDoubleClass = Reflections.findNMSClass("NBTTagDouble");
