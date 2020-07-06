@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class NBTEditorNew {
 
-    {
+    static {
         try {
             Class.forName("io.github.bananapuncher714.nbteditor.util.ReflectionUtil");
         } catch (final ClassNotFoundException e) {
