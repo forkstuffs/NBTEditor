@@ -15,7 +15,7 @@ public final class NBTEditorNew {
 
     static {
         try {
-            Class.forName("io.github.bananapuncher714.nbteditor.util.ReflectionUtil");
+            Class.forName("io.github.bananapuncher714.nbteditor.util.Reflections");
         } catch (final ClassNotFoundException e) {
             e.printStackTrace();
         }
