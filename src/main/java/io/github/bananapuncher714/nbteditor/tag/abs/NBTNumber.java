@@ -2,21 +2,25 @@ package io.github.bananapuncher714.nbteditor.tag.abs;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface NBTNumber extends NBTBase {
+public abstract class NBTNumber extends NBTBase {
 
-    long asLong();
+    protected NBTNumber(@NotNull final Object nbtBase) {
+        super(nbtBase);
+    }
 
-    int asInt();
+    public abstract long asLong();
 
-    short asShort();
+    public abstract int asInt();
 
-    byte asByte();
+    public abstract short asShort();
 
-    double asDouble();
+    public abstract byte asByte();
 
-    float asFloat();
+    public abstract double asDouble();
+
+    public abstract float asFloat();
 
     @NotNull
-    Number asNumber();
+    public abstract Number asNumber();
 
 }

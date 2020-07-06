@@ -217,17 +217,17 @@ public class Reflections {
     }
 
     @NotNull
-    public Constructor<?> findConstructor(@NotNull final String key) {
+    public Optional<Constructor<?>> findConstructor(@NotNull final String key) {
         return Reflections.findReference(key).getConstructor();
     }
 
     @NotNull
-    public Method findMethod(@NotNull final String key, @NotNull final String name) {
+    public Optional<Method> findMethod(@NotNull final String key, @NotNull final String name) {
         return Reflections.findReference(key).getMethod(name);
     }
 
     @NotNull
-    public Field findField(@NotNull final String key, @NotNull final String name) {
+    public Optional<Field> findField(@NotNull final String key, @NotNull final String name) {
         return Reflections.findReference(key).getField(name);
     }
 

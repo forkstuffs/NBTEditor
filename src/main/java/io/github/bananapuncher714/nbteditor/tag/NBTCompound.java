@@ -1,25 +1,25 @@
 package io.github.bananapuncher714.nbteditor.tag;
 
 import io.github.bananapuncher714.nbteditor.tag.abs.NBTBase;
-import lombok.RequiredArgsConstructor;
+import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 
-@RequiredArgsConstructor
-public final class NBTCompound implements NBTBase {
+public final class NBTCompound extends NBTBase {
 
-    @NotNull
-    private final Object nbtCompound;
-
-    @NotNull
-    @Override
-    public Object nbt() {
-        return this.nbtCompound;
+    public NBTCompound(@NotNull final Object nbtBase) {
+        super(nbtBase);
     }
 
     @NotNull
     @Override
     public NBTType type() {
         return NBTType.COMPOUND;
+    }
+
+    @NotNull
+    @Override
+    public Function<Object, NBTBase> createNew() {
+        return NBTCompound::new;
     }
 
 }

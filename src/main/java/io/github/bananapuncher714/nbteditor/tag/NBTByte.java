@@ -2,93 +2,49 @@ package io.github.bananapuncher714.nbteditor.tag;
 
 import io.github.bananapuncher714.nbteditor.tag.abs.NBTBase;
 import io.github.bananapuncher714.nbteditor.tag.abs.NBTNumber;
-import io.github.bananapuncher714.nbteditor.util.Reflections;
-import java.lang.reflect.InvocationTargetException;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 
-@RequiredArgsConstructor
-public final class NBTByte implements NBTNumber {
+public final class NBTByte extends NBTNumber {
 
-    @NotNull
-    private final Object nbtTagByte;
+    public NBTByte(@NotNull final Object nbtBase) {
+        super(nbtBase);
+    }
 
     @Override
     public long asLong() {
-        try {
-            return (long) Reflections.findMethod("NBTTagByte", "asLong").invoke(this.nbtTagByte);
-        } catch (final IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return 0L;
+        return this.invoke("asLong", 0L);
     }
 
     @Override
     public int asInt() {
-        try {
-            return (int) Reflections.findMethod("NBTTagByte", "asInt").invoke(this.nbtTagByte);
-        } catch (final IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return 0;
+        return this.invoke("asInt", 0);
     }
 
     @Override
     public short asShort() {
-        try {
-            return (short) Reflections.findMethod("NBTTagByte", "asShort").invoke(this.nbtTagByte);
-        } catch (final IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return (short) 0;
+        return this.invoke("asShort", (short) 0);
     }
 
     @Override
     public byte asByte() {
-        try {
-            return (byte) Reflections.findMethod("NBTTagByte", "asByte").invoke(this.nbtTagByte);
-        } catch (final IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return (byte) 0;
+        return this.invoke("asByte", (byte) 0);
     }
 
     @Override
     public double asDouble() {
-        try {
-            return (double) Reflections.findMethod("NBTTagByte", "asDouble").invoke(this.nbtTagByte);
-        } catch (final IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return 0.0d;
+        return this.invoke("asDouble", 0.0d);
     }
 
     @Override
     public float asFloat() {
-        try {
-            return (float) Reflections.findMethod("NBTTagByte", "asFloat").invoke(this.nbtTagByte);
-        } catch (final IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return 0.0f;
+        return this.invoke("asFloat", 0.0f);
     }
 
     @NotNull
     @Override
     public Number asNumber() {
-        try {
-            return (Number) Reflections.findMethod("NBTTagByte", "asNumber").invoke(this.nbtTagByte);
-        } catch (final IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    @NotNull
-    @Override
-    public Object nbt() {
-        return this.nbtTagByte;
+        return this.invoke("asNumber", 0);
     }
 
     @NotNull
@@ -97,21 +53,10 @@ public final class NBTByte implements NBTNumber {
         return NBTType.BYTE;
     }
 
-    @SneakyThrows
     @NotNull
     @Override
-    public NBTBase clone() {
-        return (NBTByte) Reflections.findMethod("NBTTagByte", "clone").invoke(this.nbtTagByte);
-    }
-
-    @Override
-    public String toString() {
-        try {
-            return (String) Reflections.findMethod("NBTTagByte", "toString").invoke(this.nbtTagByte);
-        } catch (final IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return "";
+    public Function<Object, NBTBase> createNew() {
+        return NBTByte::new;
     }
 
 }
