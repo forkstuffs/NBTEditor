@@ -10,14 +10,18 @@ public abstract class NBTList<T extends NBTBase> extends AbstractList<T> impleme
     public abstract T get(int key);
 
     @Override
+    @NotNull
     public abstract T set(int key, @NotNull T value);
 
     @Override
     public abstract void add(int key, @NotNull T value);
 
     @Override
+    @NotNull
     public abstract T remove(int key);
 
-    public abstract void add(int index);
+    public abstract boolean setWithType(int key, @NotNull NBTBase value);
+
+    public abstract boolean completeSetWithType(int key, @NotNull NBTBase value);
 
 }

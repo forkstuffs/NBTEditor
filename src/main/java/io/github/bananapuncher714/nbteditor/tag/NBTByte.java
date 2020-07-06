@@ -1,13 +1,15 @@
 package io.github.bananapuncher714.nbteditor.tag;
 
+import io.github.bananapuncher714.nbteditor.tag.abs.NBTBase;
 import io.github.bananapuncher714.nbteditor.tag.abs.NBTNumber;
 import io.github.bananapuncher714.nbteditor.util.Reflections;
 import java.lang.reflect.InvocationTargetException;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor
-public final class NBTTagByte implements NBTNumber {
+public final class NBTByte implements NBTNumber {
 
     @NotNull
     private final Object nbtTagByte;
@@ -93,6 +95,23 @@ public final class NBTTagByte implements NBTNumber {
     @Override
     public NBTType type() {
         return NBTType.BYTE;
+    }
+
+    @SneakyThrows
+    @NotNull
+    @Override
+    public NBTBase clone() {
+        return (NBTByte) Reflections.findMethod("NBTTagByte", "clone").invoke(this.nbtTagByte);
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return (String) Reflections.findMethod("NBTTagByte", "toString").invoke(this.nbtTagByte);
+        } catch (final IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
 }

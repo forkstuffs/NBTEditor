@@ -3,15 +3,23 @@ package io.github.bananapuncher714.nbteditor.tag.abs;
 import io.github.bananapuncher714.nbteditor.tag.NBTType;
 import org.jetbrains.annotations.NotNull;
 
-public interface NBTBase {
+public interface NBTBase extends Cloneable {
+
+    default String asString() {
+        return this.toString();
+    }
 
     @NotNull
     Object nbt();
 
     @NotNull
-    String toString();
+    NBTType type();
 
     @NotNull
-    NBTType type();
+    NBTBase clone();
+
+    @NotNull
+    @Override
+    String toString();
 
 }
