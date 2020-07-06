@@ -14,32 +14,62 @@ public final class NBTTagByte implements NBTNumber {
 
     @Override
     public long asLong() {
-        return 0;
+        try {
+            return (long) Reflections.findMethod("NBTTagByte", "asLong").invoke(this.nbtTagByte);
+        } catch (final IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return 0L;
     }
 
     @Override
     public int asInt() {
+        try {
+            return (int) Reflections.findMethod("NBTTagByte", "asInt").invoke(this.nbtTagByte);
+        } catch (final IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
         return 0;
     }
 
     @Override
     public short asShort() {
-        return 0;
+        try {
+            return (short) Reflections.findMethod("NBTTagByte", "asShort").invoke(this.nbtTagByte);
+        } catch (final IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return (short) 0;
     }
 
     @Override
     public byte asByte() {
-        return 0;
+        try {
+            return (byte) Reflections.findMethod("NBTTagByte", "asByte").invoke(this.nbtTagByte);
+        } catch (final IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return (byte) 0;
     }
 
     @Override
     public double asDouble() {
-        return 0;
+        try {
+            return (double) Reflections.findMethod("NBTTagByte", "asDouble").invoke(this.nbtTagByte);
+        } catch (final IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return 0.0d;
     }
 
     @Override
     public float asFloat() {
-        return 0;
+        try {
+            return (float) Reflections.findMethod("NBTTagByte", "asFloat").invoke(this.nbtTagByte);
+        } catch (final IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return 0.0f;
     }
 
     @NotNull

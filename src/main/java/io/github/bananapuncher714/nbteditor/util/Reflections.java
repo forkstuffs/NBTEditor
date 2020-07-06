@@ -141,6 +141,7 @@ public class Reflections {
             propertyMapClassMethods.put("values", propertyMapClass.getMethod("values"));
             propertyMapClassMethods.put("put", propertyMapClass.getMethod("put", Object.class, Object.class));
 
+
             // Caching Constructors
             @Nullable final Constructor<?> itemStackClassConstructor;
             if (Reflections.LOCAL_VERSION == MinecraftVersion.v1_11 ||
