@@ -41,17 +41,17 @@ public abstract class NBTBase implements Cloneable {
 
     @SneakyThrows
     @NotNull
-    public final Optional<Object> invokeWithoutDefault(@NotNull final String methodName,
-                                                       @NotNull final Object... objects) {
+    public final Object invokeWithoutDefault(@NotNull final String methodName,
+                                             @NotNull final Object... objects) {
         final Optional<Method> optional = Reflections.findMethod(this.nbtBase.getClass().getSimpleName(), methodName);
         if (!optional.isPresent()) {
             return Optional.empty();
         }
         final Method method = optional.get();
         if (objects.length == 0) {
-            return Optional.of(method.invoke(this.nbtBase, objects));
+            return method.invoke(this.nbtBase, objects);
         }
-        return Optional.ofNullable(method.invoke(this.nbtBase));
+        return method.invoke(this.nbtBase);
     }
 
     @NotNull
@@ -70,8 +70,8 @@ public abstract class NBTBase implements Cloneable {
     }
 
     @Override
-    public final boolean equals(final Object o) {
-        return this.invoke("equals", false, o);
+    public final boolean equals(@NotNull final Object object) {
+        return this.invoke("equals", false, object);
     }
 
     @SneakyThrows
