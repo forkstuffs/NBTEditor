@@ -1,5 +1,12 @@
 package io.github.bananapuncher714.nbteditor.tag;
 
+import java.util.Arrays;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+
+@RequiredArgsConstructor
+@Getter
 public enum NBTType {
 
     END(0),
@@ -13,18 +20,17 @@ public enum NBTType {
     STRING(8),
     TAG_LIST(9),
     COMPOUND(10),
-    BOOLEAN(2),
     INT_ARRAY(11),
     LONG_ARRAY(12);
 
     private final int id;
 
-    NBTType(final int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return this.id;
+    @NotNull
+    public static NBTType fromId(final int id) {
+        return Arrays.stream(NBTType.values())
+            .filter(nbtType -> nbtType.id == id)
+            .findFirst()
+            .orElse(NBTType.END);
     }
 
 }
