@@ -60,8 +60,10 @@ public final class NBTEditorNew {
     @NotNull
     public static NBTBase convertTag(@NotNull final Object object) {
         if (object instanceof String) {
-            return new NBTCompound(
-                Reflections.findMethod("MojangsonParser", "loadNBTTagCompound").invoke(null, object));
+            return Reflections.findMethod("MojangsonParser", "loadNBTTagCompound")
+                .map(method ->
+                    new NBTCompound(method.invoke(null, object)))
+                .orElse(NBTEditorNew.emptyCompound());
         }
 //        if (object instanceof NBTBase) {
 //            return (NBTBase) object;
