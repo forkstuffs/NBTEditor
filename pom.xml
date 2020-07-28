@@ -55,9 +55,9 @@
 			</plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.3</version>
+                <version>3.3.0</version>
                 <configuration>
-                    <descriptor>src/main/assembly/tests.xml</descriptor>
+                    <descriptors>src/main/assembly/tests.xml</descriptors>
                 </configuration>
                 <executions>
                     <execution>
